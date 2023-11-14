@@ -1,0 +1,299 @@
+
+
+<%- include('../partials/user/header')%>
+<style>
+    .product-image-container {
+      max-width: 100px; /* Set your desired max-width */
+      overflow: hidden;
+    }
+
+    .product-image {
+      width: 100%;
+      height: auto;
+    }
+  </style>
+
+  <div class="site-wrap" style="width: 1200px;">
+   
+    <div class="bg-light py-3">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Checkout</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="site-section">
+        <% if (!cartProducts) { %>
+            Your cart is empty.
+             <% } else { %>
+        <div class="row">
+            <% cartProducts.forEach((cartItem)=>{ %>
+          <div class="col-md-12 p-4 border mb-3 d-flex " >
+            <% if (cartItem.product.images && cartItem.product.images.length > 0) { %>
+                <div class="col-md-4">
+                  <a href="">
+                    <img src="data:<%= cartItem.product.images[0].contentType %>;base64,<%= cartItem.product.images[0].data.toString('base64') %>" alt="Image" height="180px" width="180px" class="img-fluid">
+                  </a>
+                </div>
+              <% } else { %>
+                <div class="col-md-4">
+                  <p>No Image Available</p>
+                </div>
+              <% } %>
+            <div class="col-md-4">
+              <span class="d-block text-primary h6 text-uppercase">
+                <%= cartItem.product.product_name %>
+              </span>
+              <p>
+                <%= cartItem.product.description %> <br>
+               
+                 
+                <strong class="text-black">₹<%= cartItem.product.price %>.00</strong>
+              </p>
+              <p>
+                Stock: <%= cartItem.product.stock_count %>
+              </p>
+            </div>
+            <div class="col-md-4">
+              <span class="text-black">
+                Quantity:<%= cartItem.quantity%> <br>
+                Total Price: ₹<%= cartItem.totalAmount %>.00 
+                <span id="" class="text-black">
+                    <!-- <%= cartItem.product.price * cartItem.quantity %>.00 -->
+                </span>
+              </span>
+            </div>
+          </div>
+          
+        </div>
+        <% }) %>
+        <div class="row">
+          <div class="col-md-6 mb-5">
+            <div class="d-flex">
+              <p class="m-3">
+                <a href="/shop" class="btn btn-outline-primary btn-sm btn-block">
+                  Continue Shopping
+                </a>
+              </p>
+              <p class="m-3">
+                <a href="/cart" class="btn btn-primary btn-sm btn-block">
+                  Back To cart
+                </a>
+              </p>
+            </div>
+          </div>
+          <div class="col-md-6 address border p-3">
+            <div class="d-flex justify-content-between">
+              <h3>Shipping Address</h3>
+                   <% if(currentAddress){ %>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+              <a href="/address/changeAddress" class="btn btn-primary">Change</a>
+              <% }else{ %>
+              <a href="/new-address" class="btn btn-outline-primary">
+                Add New Address
+              </a>
+              <% } %>
+
+            </div>
+            <% if (currentAddress){ %>
+            <p>
+                <%= currentAddress.place %>
+                <%= currentAddress.postCode %>
+                <%= currentAddress.post %>
+                <%= currentAddress.houseName %>
+                <%= currentAddress.state %>
+            </p>
+            <% }else{ %>
+            <p>No delivery address found.</p>
+            <% } %>
+          </div>
+        </div>
+        <% } %>
+      </div>
+      
+      <form action="/product/cart/checkout" method="post" id="checkout-form">
+        <div class="row" style="margin-left: 50px;">
+          <div class="col-md-6 d-flex flex-column justify-content-between">
+            <div>
+              <div>
+                <label class="text-black h4" for="payment">Payment Methods</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="method" value="rzp" checked>
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Razorpay
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="method" value="wlt">
+                <label class="form-check-label" for="flexRadioDefault2">
+                  Wallet
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="method" value="cod">
+                <label class="form-check-label" for="flexRadioDefault3">
+                  Cash on Delivery
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 pl-5">
+            <div class="row justify-content-end">
+              <div class="col-md-7">
+                <div class="row">
+                  <div class="col-md-12 text-right border-bottom mb-5">
+                    <h3 class="text-black h4 text-uppercase mt-3">Price Details</h3>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <span>Price (<%= cartProducts.length %> items)</span>
+                  </div>
+                  <div class="col-md-6 pl-0">
+                    <span class="text-black">
+                      ₹<span id="totalPrice" class="text-black">
+                       <%=grossTotal%>.00
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <span>Delivery Charges</span>
+                  </div>
+                  <div class="col-md-6 pl-0">
+                    <span class="text-black">
+                      ₹<span class="text-black">
+                        5.00
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <span>Discount</span>
+                  </div>
+                  <div class="col-md-6 pl-0">
+                    <span class="text-black">
+                        <% if (discount===0) { %>
+                      ₹<span class="text-black">
+                        00.00
+                      </span>
+                      <% }else{ %>
+                        ₹ <%= discount %>.00
+                        <% } %>
+                       
+                        
+                   
+                    </span>
+                  </div>
+                </div>
+                <div class="row mb-5">
+                  <div class="col-md-6">
+                    <span>Grand Total</span>
+                  </div>
+                  <div class="col-md-6 pl-0">
+                    <span class="h5 text-black">
+                      ₹<span id="grandTotalPrice" class="text-black">
+                        <%= discount === 0 ? grossTotal + 5 : grossTotal - discount + 5 %>.0
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <div class="row mb-5">
+                  <div class="col-md-12">
+                    <% if  (!currentAddress){ %>
+                    <p class="text-center">No Address found.</p>
+                    <a href="/profile" class="mb-3 btn btn-outline-primary btn-lg btn-block">
+                      Go To Profile
+                    </a>
+                    <%  }else { %>
+                    <div>
+                      <input type="hidden" name="addressId" >
+                      <input type="hidden" name="discount">
+                      <input type="hidden" name="currentCoupon" >
+                      <button type="button" class="btn btn-primary btn-lg py-3 btn-block" onclick="openPlaceOrderModal()">
+                        Place Order
+                      </button>
+                      <% if (typeof message !="undefined") {%>
+
+                        <p class="mt-3 text-info"><%= message %></p>
+      
+                        <%} %>
+                    </div>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <!-- <div class="row col-lg-12">
+        <form action="/apply-coupon" method="post" id="checkout-form">
+          <div style="margin-left: 50px;">
+            <div>
+              <label class="text-black h4" for="coupon">Coupon</label>
+              <p>Enter your coupon code if you have one.</p>
+            </div>
+            <div class="d-flex">
+              <input type="text" class="form-control py-3" name="coupon" id="coupon" placeholder="Paste Coupon Code">
+              <div class="col-md-4">
+                <button type="submit" class="btn btn-primary btn-sm">Apply Coupon</button>
+              </div>
+            </div>
+            <p class="text-danger">
+        
+            </p>
+            <a href="/coupons" class="btn btn-outline-primary btn-sm mt-4 mb-5">View Available
+              Coupons</a>
+          </div>
+        </form>
+      </div> -->
+    </div>
+  </div>
+
+  <!-- Place Order Modal -->
+  <div class="modal fade" id="placeOrderModal" tabindex="-1" role="dialog" aria-labelledby="placeOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="placeOrderModalLabel">Confirm Place Order</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to place your order?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="confirmPlaceOrder">Place Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    // Function to open the "Place Order" modal
+    function openPlaceOrderModal() {
+        console.log("dsdnfklddfffff");
+      $('#placeOrderModal').modal('show');
+    }
+
+    // Event handler for the "Place Order" button click
+   document.getElementById('confirmPlaceOrder').addEventListener('click',()=>{
+    console.log("heyyyyyyyyyyyyyyyyyy");
+      const checkoutForm = document.getElementById('checkout-form');
+      checkoutForm.submit();
+      // After placing the order, you can close the modal
+      $('#placeOrderModal').modal('hide');
+   })
+        
+   
+  </script>
+       
+<%- include('../partials/user/footer')%>

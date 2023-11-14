@@ -1,0 +1,189 @@
+
+                <!DOCTYPE html>
+                <html lang="en">
+                
+                <%- include('../partials/user/header')%>
+                
+                <body>
+                  <div class="site-wrap">
+                
+                    <div class="bg-light py-3">
+                      <div class="container">
+                        <div class="row">
+                          <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Orders</strong>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                
+                    <div class="site-section">
+                      <div class="container">
+                        <% if (!order.length) { %>
+                        No orders found.
+                        <% } else { %>
+                        <% order.forEach((item)=> { %>
+                        <div class="d-flex flex-column flex-md-row border p-3 mb-3">
+                          <div class="col-md-3 col-12 d-flex justify-content-center mb-5">
+                            <a href="/single/<%= item.orderedProducts[0]._id %>">
+                              <img src="data:<%= item.orderedProducts[0].images[0].contentType %>;base64,<%= item.orderedProducts[0].images[0].data.toString('base64') %>" alt="Image" height="180px" width="180px" class="img-fluid">
+                            </a>
+                          </div>
+                          <div class="col-md-6">
+                            <span class="d-block text-primary h6 text-uppercase">
+                              <%= item.orderedProducts[0].name %>
+                            </span>
+                            <p>
+                              Price: ₹<%= item.orderedProducts[0].price.toFixed(2) %>,
+                              Quantity: <%= item.products.quantity %>,<br>
+                              Payment Method: <%= item.paymentMethod %><br>
+                              Delivery Address: <%= item.deliveryAddress.state %>,
+                              <%= item.deliveryAddress.place %>,
+                              <%= item.deliveryAddress.post %>,
+                              <%= item.deliveryAddress.postCode %>
+                            </p>
+                            <div class="d-flex">
+                              <div>
+                                <p class="text-black">
+                                  Order Confirmed, <%= item.orderDate.toLocaleDateString() %>
+                                </p>
+                                <p class="text-black">
+                                  Delivery, <%= item.deliveryDate.toLocaleDateString() %><br>
+                                  <% if (!item.products.isCancelled) { %>
+                                  <strong>Status: <%= item.status %></strong>
+                                  <% } %>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-3">
+                            <% if (item.products.isCancelled) { %>
+                            <p class="text-danger ml-3">
+                              Order Cancelled
+                            </p>
+                            <% } else if (item.products.isReturned) { %>
+                            <p class="text-muted ml-3">
+                              Returned
+                            </p>
+                            <% } else { %>
+                            <% if (item.status==='Processing' ) { %>
+                                <% item.orderedProducts.forEach(function(product) { %>
+                            <p class="ml-3">
+                            <form action="/cancel-order" method="post" class="orders-form" id="<%= `cancelForm_${item._id}_${product._id}` %>">
+                              <input type="hidden" name="orderId" value="<%= item._id %>">
+                              <input type="hidden" name="productId" value="<%= item.orderedProducts[0]._id %>">
+                              <button type="button" class="btn btn-sm btn-outline-danger mb-3" 
+                              onclick="openCancelOrderModal('<%= `cancelForm_${item._id}_${product._id}` %>')">
+                                Cancel
+                              </button>
+                            </form>
+                            </p>
+                            <% }); %>
+                            <% } else if (item.status==='Delivered' ) { %>
+                            <% const currentDate=new Date(); %>
+                            <% const deliveryDate=new Date(item.deliveryDate); %>
+                            <% const sevenDaysAfterDelivery=new Date(deliveryDate); %>
+                            <% sevenDaysAfterDelivery.setDate(sevenDaysAfterDelivery.getDate() + 7); %>
+                            <% if (item.products.returnRequested==="Pending") { %>
+                            <p class="ml-4">Return Request:
+                              <span class="text-info">Pending</span>
+                            </p>
+                            <% } else if (item.products.returnRequested==="Rejected") { %>
+                            <p class="ml-4">Return
+                              Request: <span class="text-danger">Rejected</span>
+                            </p>
+                            <% } else if (item.products.returnRequested==="Approved") { %>
+                            <p class="ml-4">Return
+                              Request: <span class="text-success">Approved</span>
+                            </p>
+                            <% } else if (item.products.returnRequested==="Completed") { %>
+                            <span class="text-dark ml-4">Returned</span>
+                            </p>
+                            <% } else if (currentDate <= sevenDaysAfterDelivery) { %>
+                            <p class="ml-3">
+                              <a href="/return-product?order=<%= item._id %>&product=<%= item.orderedProducts[0]._id %>&category=<%= item.orderedProducts[0].category %>&quantity=<%= item.products.quantity %>" class="btn btn-sm btn-outline-primary mb-3">
+                                Return
+                              </a>
+                            </p>
+                            <% } %>
+                            <% } %>
+                            <% } %>
+                          </div>
+                        </div>
+                        <% }) %>
+                        <% } %>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="row">
+                              <div class="col-md-6">
+                                <p><a href="/shop" class="btn mb-3  btn-outline-primary btn-sm btn-block">Continue
+                                    Shopping
+                                  </a>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                
+                    <!-- Cancel Order Modal -->
+                    <div class="modal fade" id="cancelOrderModal" tabindex="-1" role="dialog" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="cancelOrderModalLabel">Confirm Cancel Order</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            Are you sure you want to cancel your order?
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-danger" id="confirmCancelOrder">
+                              Cancel Order
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                
+                    <script>
+                       // Function to open the "Cancel Order" modal
+function openCancelOrderModal(formId) {
+    // Set the form data dynamically based on the form ID
+    const form = document.getElementById(formId);
+    const productId = form.querySelector('input[name="productId"]').value;
+
+    // Set the form data dynamically based on the product ID
+    form.querySelector('input[name="productId"]').value = productId;
+
+    // Open the modal
+    $('#cancelOrderModal').modal('show');
+
+    // Event listener for the "Cancel Order" button click inside the modal
+    document.getElementById('confirmCancelOrder').addEventListener('click', function() {
+        // You can perform any additional actions here before submitting the form
+        form.submit();
+
+        // After submitting the form, you can close the modal
+        $('#cancelOrderModal').modal('hide');
+    });
+}
+
+// Event handler for the "Cancel Order" button click
+const orderForms = document.getElementsByClassName('orders-form');
+for (let i = 0; i < orderForms.length; i++) {
+    orderForms[i].addEventListener('submit', function(event) {
+        event.preventDefault();
+        // Handle the form submission for the specific product
+        const productId = orderForms[i].querySelector('input[name="productId"]').value;
+        // You can perform any additional actions here before opening the modal
+        openCancelOrderModal(orderForms[i].id);
+    });
+}
+
+                    </script>
+                
+                <%- include('../partials/user/footer')%>

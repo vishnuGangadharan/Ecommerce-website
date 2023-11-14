@@ -1,0 +1,149 @@
+<%- include('../partials/user/header')%>
+
+<link rel="stylesheet" href="/user/css/profile.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/css/bootstrap.min.css">
+
+
+
+<body>
+
+  <% if(user) { %>
+<form action="/profile " method="POST" enctype="multipart/form-data" >
+    <div class="container rounded bg-white mt-5 mb-5">
+      <div class="row">
+          <div class="col-md-3 border-right">
+              <div class="d-flex flex-column align-items-center text-center p-3 py-3">
+                <% if (user.image && user.image.contentType) { %>
+                  <img class="w-100" src="data:<%= user.image.contentType %>;base64,<%= user.image.data.toString('base64') %>" />
+
+              <% } %>
+              
+              
+                
+                  <span class="font-weight-bold"><%= user.userName %></span>
+                  <span class="text-black-50"><%= user.email %></span>
+                  <span><%= user.mobile %> </span>
+              </div>
+              <div class="input-group col-xs-12 mt-3">
+                <input type="file"  id="image" name="image" class="form-control file-upload-info" required> 
+              </div>
+              <button class="btn btn-primary btn-block mt-3" type="submit">
+                  Change Image
+              </button>
+              <a href="/cart/order" class="btn btn-success btn-block mt-3">My Orders</a>
+              <a href="/cart" class="btn btn-success btn-block mt-3">My Cart</a>
+              <button class="btn btn-success btn-block mt-3">Wish List</button>
+          </div>
+        </form>
+      <div class="col-md-9">
+        <div class="p-3 py-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="text-right">Address Details</h4>
+          </div>
+          <div class="row mt-3">
+            <% address.forEach((addressItem,index) => { %>
+            
+            <div id="<%=addressItem._id %>" class="col-md-4">
+              <div class="card mb-3">
+                <div class="card-body">
+                  <div class="card-title font-weight-bold text-success ">
+                    Address:<%= index+1 %>
+                </div>
+                  <p class="card-text"><strong>Name:</strong> <%= addressItem.userName %></p>
+                  <p class="card-text"><strong>Email:</strong> <%= addressItem.email %></p>
+                  <p class="card-text"><strong>Mobile:</strong> <%= addressItem.mobile %></p>
+                  
+                  <p class="card-text"><strong></strong> <%= addressItem.houseName %>, <%= addressItem.place %>,<%= addressItem.post %>,<%= addressItem.postCode %></p>
+                 
+                  <p class="card-text"><strong></strong> <%= addressItem.district %>,<%= addressItem.state %></p>
+                  
+
+                  <div class="btn-group mt-2" role="group">
+                    <a class="btn btn-primary profile-button mr-5" type="button" href="/user/profile/editaddress?addressid=<%=addressItem._id %>">Edit</a>
+                    <!-- <a class="btn btn-danger text-white profile-button me-2" onclick="confirmDelete('')" type="button">Delete</a> -->
+                    <a class="btn btn-danger text-white profile-button me-2" onclick="confirmDelete('<%= addressItem._id %>')" type="button">Delete</a>
+                </div>
+           
+                
+                </div>
+              </div>
+            </div>
+            <% }); %>
+          </div>
+
+          <% if (showAddAddressBTN) { %>
+            <a class="mt-2 text-center btn btn-primary profile-button" type="button" href="/profile/addAddress">Add Address</a>
+            <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% } %>
+  <script>
+    function confirmDelete(addressItemId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'You will not be able to recover this address!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // User clicked "Yes, delete it!" button
+            deleteAddress(addressItemId);
+        }
+    });
+}
+
+function deleteAddress(addressItemId) {
+    fetch(`/deleteAddress/${addressItemId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        // window.location.reload();
+        return response.json();
+    })
+    .then(data => {
+    console.log('Address deleted successfully');
+    Swal.fire({
+    title: "Address Deleted!",
+    text: "Your address has been successfully deleted.",
+    icon: "success"
+  })
+ .then(() => {
+  document.getElementById(addressItemId).remove()
+ });
+
+})
+.catch(error => {
+    console.error('Error:', error);
+    swal("Error", "Failed to delete address.", "error");
+});
+
+
+
+
+}
+
+ </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- Include jQuery, Bootstrap CSS and JavaScript, and Velocity.js as described in the previous response -->
+
+
+
+</body>
+
+</html>
+  <!-- Shopping Cart Section End -->
+<%- include('../partials/user/footer')%>

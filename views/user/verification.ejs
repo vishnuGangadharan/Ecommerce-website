@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Shoppers</title>
+    <link rel="stylesheet" href="/css/uservalidation.css" />
+  </head>
+
+  <body>
+    <div class="container-scroller">
+      <div class="container-fluid page-body-wrapper full-page-wrapper">
+        <div class="content-wrapper d-flex align-items-center auth px-0">
+          <div class="row w-100 mx-0">
+            <div class="col-lg-4 mx-auto">
+              <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+                <div>
+                  <img
+                    src="/public/images/product-09.jpg"
+                    class="mr-2"
+                    alt="logo"
+                    height="50"
+                    width="130"
+                  />
+                  <p class="font-weight-light">Verify to continue.</p>
+                </div>
+                <form
+                  action="/verificaton"
+                  method="post"
+                  class="pt-3 row contact_form"
+                  method="post"
+                  novalidate="novalidate"
+                >
+                  <div class="col-md-12 form-group p_star">
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="OTP"
+                      name="OTP"
+                      value=""
+                      placeholder="Enter your OTP"
+                    />
+                  </div>
+                  <input type="hidden" id="userId" name="ID" value="<%= id %>">
+                  <div class="mt-3">
+                    <button
+                      type="submit"
+                      class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
+                    >
+                      Verify
+                    </button>
+                  </div>
+                  <% if (typeof message !="undefined") {%>
+
+                  <p class="mt-3 text-info"><%= message %></p>
+
+                  <%} %>
+                </form>
+                <div id="timer"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      // Set the countdown time to 5 minutes (300 seconds)
+      
+      let countdownTime = Number("300");
+      let timerElement = document.getElementById("timer");
+      
+      function startTimer() {
+          let minutes, seconds;
+          let countdown = setInterval(function() {
+              minutes = parseInt(countdownTime / 60, 10);
+              seconds = parseInt(countdownTime % 60, 10);
+      
+              minutes = minutes < 10 ? "0" + minutes : minutes;
+              seconds = seconds < 10 ? "0" + seconds : seconds;
+      
+              timerElement.innerHTML = minutes + ":" + seconds;
+      
+              countdownTime--;
+      
+              if (countdownTime < 0) {
+                  clearInterval(countdown);
+                  timerElement.innerHTML = "New Otp ! Pls click resendOTP";
+  
+                              
+                  document.getElementById("resendOTP").innerHTML = ` <a href="/resendOTP/" class="btn btn-primary custom-btn">Resend OTP</a> `
+     
+                  
+                    document.getElementById("Verify").remove();
+                    document.getElementById("info").remove();
+            }
+          }, 1000); // Update the timer every 1 second (1000 milliseconds)
+      }
+      
+      // Call the startTimer function when the page is loaded
+      window.onload = startTimer;
+      </script>
+  
+  </body>
+</html>

@@ -1,0 +1,126 @@
+
+
+<%- include('../partials/user/header')%>
+
+<div class="col-12 grid-margin">
+    <div class="card mt-5 mb-5">
+        <% if(typeof message !=='undefined' ){ %>
+            <div class="alert alert-danger " style="font-size :20px">
+                <%= message %>
+            </div>
+        <% } %>
+      <div class="card-body">
+        <h4 class="card-title">Personal info </h4>
+        <form method="post" action="/profile/addAddress" class="form-sample">
+          <p class="card-description">
+            <!-- Personal info -->
+          </p>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Name</label>
+                <div class="col-sm-9">
+                  <input type="text" name="name" class="form-control" required/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Place</label>
+                <div class="col-sm-9">
+                  <input type="text" name="place" class="form-control" required/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row pt-3">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Email</label>
+                <div class="col-sm-9">
+                    <input type="email" name="email" class="form-control" required/>
+
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Post</label>
+                  <div class="col-sm-9">
+                      <input type="text" name="post" class="form-control" required/>
+  
+                  </div>
+                </div>
+              </div>
+            <!-- <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Date of Birth</label>
+                <div class="col-sm-9">
+                  <input class="form-control" placeholder="dd/mm/yyyy"/>
+                </div>
+              </div>
+            </div> -->
+          </div>
+
+
+         
+
+          
+          <div class="row pt-3">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Mobile Number</label>
+                <div class="col-sm-9">
+                  <input type="number" name="mobile" class="form-control"  required/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">PIN code</label>
+                <div class="col-sm-9">
+                  <input type="number" name="pincode" class="form-control" required/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row pt-3">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">House Name</label>
+                <div class="col-sm-9">
+                  <input type="text" name="house" class="form-control" required/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">District</label>
+                <div class="col-sm-9">
+                  <input type="text" name="district" class="form-control" required/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row pt-3">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">State/Region</label>
+                <div class="col-sm-9">
+                  <input type="text" name="state" class="form-control" required/>
+                </div>
+              </div>
+            </div>
+          
+          </div>
+          <div class="mt-5 d-flex justify-content-center align-items-center">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </div>
+        
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <%- include('../partials/user/footer')%>

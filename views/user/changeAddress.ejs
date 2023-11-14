@@ -1,0 +1,55 @@
+<%- include('../partials/user/header')%>
+
+
+
+  <div class="site-wrap">
+
+    <div class="bg-light py-3">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Select Delivery Address</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-section">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="text-center col-md-12">
+            <h2 class="h3 mb-3 text-black">Select Your Delivery Address</h2>
+          </div>
+          <div>
+            <% if (address.length === 0) { %>
+            <p class="text-center">No Address found.</p>
+            <a href="/profile" class="btn btn-outline-primary btn-lg btn-block">
+              Go To Profile
+            </a>
+            <% } else { %>
+                <% address.forEach((addres) => { %>
+            <form id="<%= addres._id %>" action="/address/changeAddress" method="post">
+              <div class="p-4 border mb-3 <%= addres.default ? 'bg-primary' : 'bg-light' %>" onclick="changeAddress('<%= addres._id %>')">
+                <input type="hidden" name="addressId" value="<%= addres._id %>">
+                <span class="d-block text-primary h6 text-uppercase  <%= addres.default ? 'text-light' : '' %>"></span>
+                <p class="<%= addres.default ? 'text-light' : '' %>"><%= addres.state %>, <%= addres.post %>
+                    <%= addres.place %>, <%= addres.houseName %>,
+                    <%= addres.postCode %>
+
+                </p>
+              </div>
+            </form>
+            <% }) %>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function changeAddress(formId) {
+        const form = document.getElementById(formId);
+        form.submit();
+      }
+    </script>
+
+
+<%- include('../partials/user/footer')%>

@@ -1,0 +1,77 @@
+<%- include("../partials/admin/header") %>
+<%- include("../partials/admin/side") %>
+
+<div class="main-panel">
+    <div class="content-wrapper">
+      
+      <div class="row">
+
+
+        <div class="col-lg-12 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">CUSTOMERS</h4>
+             
+
+              <div class="table-responsive">
+
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Sl No</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Mobile</th>
+                      <th>Status</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% users.forEach((user,index )=> { %>
+
+                      <tr>
+                        <td>
+                          <%= index+1 %>
+                        </td>
+                        <td>
+                          <%= user. userName %>
+                        </td>
+                        <td>
+                          <%= user.email %>
+                        </td>
+                        <td>
+                          <%= user.phone %>
+                        </td>
+                          <!--if User Block then this display -->
+                
+                      <% if (user.is_block == true) { %>
+                        <td>
+                          <p class="text-danger">Deactive</p>
+                        </td>
+                        <td>
+                          <a href="/admin/user_unblock?id=<%= user._id %>" class="btn btn-success">Unblock</a>
+
+                        </td>
+                      <% } else if (user.is_block == false) { %>
+                        <td>
+                          <p class="text-success">Active</p>
+                        </td>
+                        <td>
+                          <a href="/admin/user_block?id=<%= user._id %>" class="btn btn-danger">Block</i></a>
+                        </td>
+                      </tr>
+                      <% } %>
+                      <% }) %>
+                    </tbody>
+                  </table>
+               
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+
+    <%- include("../partials/admin/footer") %>
