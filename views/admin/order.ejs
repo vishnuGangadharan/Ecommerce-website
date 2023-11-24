@@ -62,7 +62,7 @@
                             for (let i = 0; i < orders.length; i++) {
                               %>
                                <tr>
-                                 <td><%= orders[i].user.userName %><br><%= orders[i].user.email %></td>
+                                 <td><%= orders[i].user?.userName %><br><%= orders[i].user?.email %></td>
                                  <td>
                                     <% for ( let j = 0; j < orders[i].products.length; j++ ) { %>
                                       <%= orders[i].products[j].product.product_name %> : <%= orders[i].products[j].quantity %><br>
@@ -72,6 +72,7 @@
                                     <%= orders[i].deliveryAddress.place %>,<br>
                                     <%= orders[i].deliveryAddress.postCode %>,<br>
                                     <%= orders[i].deliveryAddress.post %>,<br>
+                                    <%= orders[i].deliveryAddress.district %>
                                     <%= orders[i].deliveryAddress.state %>
                                  </td>
                                  <td>₹<%= orders[i].totalAmount %></td>

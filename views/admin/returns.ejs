@@ -9,7 +9,7 @@
     <div class="content-wrapper">
       <!-- Content -->
 
-      <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="container-xxl flex-grow-1 container-p-y"  style="    margin-left: -50px;">
 
           <a href="/admin/order"><button style="margin-top: 20px;" type="button" class="btn btn-primary btn-lg mb-3">Back to order</button></a> 
 
@@ -49,28 +49,28 @@
                         <% returnRequests.forEach((request)=> { %>
                         <tr>
                           <td>
-                            <%= request.user.username %><br>
-                            <p class="text-dark">
+                           <p><%= request.user.userName %></p> <br>
+                            <p class="text-dark mb-1">
                               <%= request.user.email %>
                             </p><br>
-                            <%= request.user.mobile %>
+                            <%= request.user.phone %>
                           </td>
                           <td>
                             <div>
-                              <div class="border-bottom mb-3">
+                              <div class=" mb-2">
                                 <span class="h6 text-uppercase">
-                                  <%= request.product?.name %>
+                                  <%= request.product?.product_name %>
                                 </span><br>
-                                Total price: ₹<%= request.totalPrice %> <br>
+                                Total price: ₹<%= request.product.price * request.quantity %> <br>
                                 Quantity: <%= request.quantity %> <br>
                               </div>
                               Requested Date: <%= request.createdAt.toLocaleDateString() %>
                             </div>
                           </td>
                           <td>
-                            <%= request.order?.deliveryAddress.post %>,
-                            <%= request.order?.deliveryAddress.postCode%>,
-                            <%= request.order?.deliveryAddress.district %>,
+                            <%= request.order?.deliveryAddress.post %>,<br>
+                            <%= request.order?.deliveryAddress.postCode%>,<br>
+                            <%= request.address.district %>,<br>
                             <%= request.order?.deliveryAddress.state %>,<br>
                           
                           </td>

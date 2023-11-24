@@ -41,6 +41,8 @@ user_route.post('/user/profile/editaddress',Auth.checkToBlock,Auth.userAuth,prof
 
 user_route.get('/product/cart/checkout',Auth.userAuth,cartControl.loadCheckOut)
 user_route.post('/product/cart/checkout',Auth.userAuth,Auth.checkToBlock,cartControl.placeOrder)
+// razore pay saving
+user_route.post('/save-rzporder',Auth.userAuth,Auth.checkToBlock,cartControl.saveRazorepay) 
 user_route.get('/address/changeAddress',cartControl.loadchangeAddress)
 user_route.post('/address/changeAddress',Auth.userAuth,Auth.checkToBlock,cartControl.changeAddress)
 
@@ -60,5 +62,7 @@ user_route.post('/forgetPassword',Auth.userloggedout,Controler.forgetPassword)
 user_route.get('/verifyOTPForgetPass',Auth.userloggedout,Controler.loadOTPForgetPassPage)
 user_route.post('/verifyOTPForgetPass',Auth.userloggedout,Controler.verifyOTPForgetPassPage)
 user_route.post('/changePass',Auth.userloggedout,Controler.changepass)
+
+user_route.get('/user/wallet',Auth.userAuth,Auth.checkToBlock,cartControl.getWallet)
 
 module.exports = user_route

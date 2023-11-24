@@ -7,7 +7,7 @@ const product = require("../../Models/productModel");
 const loadaddproduct = async (req, res) => {
   try {
     const Categories = await productCategory.find({});
-    console.log(Categories);
+    // console.log(Categories);
     return res.render("admin/addProduct", { message: "", Categories });
   } catch (error) {
     console.log(error.message);
@@ -16,8 +16,8 @@ const loadaddproduct = async (req, res) => {
 
 const addproduct = async (req, res) => {
   try {
-    console.log("add product");
-    console.log(req.body);
+    // console.log("add product");
+    // console.log(req.body);
     const Categories = ({
       productName,
       brandName,
@@ -34,8 +34,8 @@ const addproduct = async (req, res) => {
       !description ||
       !stockCount
     ) {
-        console.log("dkjf");
-        console.log(Categories);
+        // console.log("dkjf");
+        // console.log(Categories);
       return res.render("admin/addProduct", {
         message: "fill all the fields",
         Categories,
@@ -49,7 +49,7 @@ const addproduct = async (req, res) => {
     } else {
       stock = false;
     }
-    console.log("Product  .");
+    // console.log("Product  .");
     //create the product
 
     const createdproduct = new product({
@@ -61,14 +61,14 @@ const addproduct = async (req, res) => {
       category: category,
       in_stock: stock,
     });
-    console.log(req.files);
+    // console.log(req.files);
     req.files.forEach((file) => {
       createdproduct.images.push({
         data: file.buffer,
         contentType: file.mimetype,
       });
     });
-    console.log(createdproduct.images);
+    // console.log(createdproduct.images);
 
     await createdproduct.save();
 
@@ -84,7 +84,7 @@ const addproduct = async (req, res) => {
 const loadProductList = async (req, res) => {
   try {
     const products = await product.find();
-    console.log(products);
+    // console.log(products);
     if (products) {
       res.render("admin/products", { products });
     } else {

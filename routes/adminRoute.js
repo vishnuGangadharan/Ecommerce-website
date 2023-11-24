@@ -17,6 +17,8 @@ admin_Routes.get('/dashboard',Auth.adminAuth,authControl.dashboard)
 admin_Routes.get('/login',Auth.adminLogout,authControl.loadLogin)
 admin_Routes.post('/login',authControl.validAdmin,authControl.checkAdmin)
 
+admin_Routes.get('/logout',Auth.adminAuth,authControl.logoutAdmin)
+
 admin_Routes.get('/userLogs',Auth.adminAuth,userData.displayUser)
 // admin_routes.get('/product/addCategory',Auth.adminAuth)
 admin_Routes.get('/user_block',Auth.adminAuth,userData.blockUser)
@@ -52,4 +54,9 @@ admin_Routes.get('/order/action-update',Auth.adminAuth,orderControl.updateAction
 admin_Routes.get('/order-cancel',Auth.adminAuth,orderControl.updateOrderCancel)
 admin_Routes.get('/return-requests',Auth.adminAuth, orderControl.getReturnRequests)
 admin_Routes.post('/return-requests',Auth.adminAuth,orderControl.returnRequestAction)
+
+//salesreport
+admin_Routes.get("/sales-report",Auth.adminAuth,orderControl.loadSalesReport)
+admin_Routes.post("/sales-report",Auth.adminAuth,orderControl.loadSalesReport)
+
 module.exports = admin_Routes

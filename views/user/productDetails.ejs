@@ -26,13 +26,13 @@
 <section class="sec-product-detail bg0 p-t-65 p-b-60">
     <div class="container">
         <div class="row">
-            <div class="col-md-6 col-lg-7 p-b-30">
+            <div class="col-md-6 col-lg-7 p-b-30 ">
                 <div class="p-l-25 p-r-30 p-lr-0-lg">
-                    <div class="wrap-slick3 flex-sb flex-w">
+                    <div class="wrap-slick3 flex-sb flex-w zoom-image">
                         <div class="wrap-slick3-dots"></div>
-                        <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
+                        <div class="wrap-slick3-arrows flex-sb-m flex-w "></div>
 
-                        <div class="slick3 gallery-lb">
+                        <div class="slick3 gallery-lb ">
                             <!-- <div class="item-slick3" data-thumb="/images/product-detail-01.jpg">
                                 <div class="wrap-pic-w pos-relative">
                                     <img src="/images/product-detail-01.jpg" alt="IMG-PRODUCT">
@@ -53,11 +53,12 @@
                                 </div>
                             </div> -->
                             <%details.images.forEach((image) => {%>
-								<div class="item-slick3" data-thumb="data:<%= image.contentType %>;base64,<%= image.data.toString('base64') %>">
+                            
+								<div class="item-slick3  " data-thumb="data:<%= image.contentType %>;base64,<%= image.data.toString('base64') %>">
 									<div class="wrap-pic-w pos-relative">
-										<img src="data:<%= image.contentType %>;base64,<%= image.data.toString('base64') %>" alt="IMG-PRODUCT" style="width: 442px;height: 500px;">
+										<img class="" src="data:<%= image.contentType %>;base64,<%= image.data.toString('base64') %> " alt="IMG-PRODUCT" style="width: 442px;height: 500px;">
 
-										<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="data:<%= image.contentType %>;base64,<%= image.data.toString('base64') %>">
+										<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04 " href="data:<%= image.contentType %>;base64,<%= image.data.toString('base64') %>">
 											<i class="fa fa-expand"></i>
 										</a>
 									</div>
@@ -85,59 +86,7 @@
                        Discription: <%= details.description %>
                     </p>
                     
-                    <!--  -->
-                    <!-- <div class="p-t-33">
-                        <div class="flex-w flex-r-m p-b-10">
-                            <div class="size-203 flex-c-m respon6">
-                                Size
-                            </div>
-
-                            <div class="size-204 respon6-next">
-                                <div class="rs1-select2 bor8 bg0">
-                                    <select class="js-select2" name="time">
-                                        <option>Choose an option</option>
-                                        <option>Size S</option>
-                                        <option>Size M</option>
-                                        <option>Size L</option>
-                                        <option>Size XL</option>
-                                    </select>
-                                    <div class="dropDownSelect2"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex-w flex-r-m p-b-10">
-                            <div class="size-203 flex-c-m respon6">
-                                Color
-                            </div>
-
-                            <div class="size-204 respon6-next">
-                                <div class="rs1-select2 bor8 bg0">
-                                    <select class="js-select2" name="time">
-                                        <option>Choose an option</option>
-                                        <option>Red</option>
-                                        <option>Blue</option>
-                                        <option>White</option>
-                                        <option>Grey</option>
-                                    </select>
-                                    <div class="dropDownSelect2"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex-w flex-r-m p-b-10">
-                            <div class="size-204 flex-w flex-m respon6-next">
-                                <div class="wrap-num-product flex-w m-r-20 m-tb-10">
-                                    <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-                                        <i class="fs-16 zmdi zmdi-minus"></i>
-                                    </div>
-
-                                    <input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product" value="1">
-
-                                    <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-                                        <i class="fs-16 zmdi zmdi-plus"></i>
-                                    </div>
-                                </div> -->
+                    
 
                                 <button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail"  onclick="addCart('<%= details._id %>')">
                                     Add to cart
@@ -389,6 +338,40 @@ function addCart(id) {
     });
 }
 </script>
+
+
+<script>
+    //image zooming
+    const image = document.querySelector('.zoom-image');
+
+image.addEventListener('mousemove', (e) => {
+    const { offsetX, offsetY, width, height } = e.target.getBoundingClientRect();
+    const centerX = offsetX / width;
+    const centerY = offsetY / height;
+    image.style.transformOrigin = `${centerX * 100}% ${centerY * 100}%`;
+});
+
+</script>
+
+<style>
+    .image-container {
+     position: relative;
+     width: 400px; /* Adjust the width to your desired size */
+ }
+
+ /* Define CSS for the image */
+ .zoom-image {
+     width: 100%;
+     height: auto;
+     cursor: zoom-in;
+     transition: transform 0.3s;
+ }
+
+ /* On hover, increase the image size */
+ .zoom-image:hover {
+     transform: scale(1.2); /* Adjust the scale factor for zoom level */
+ }
+ </style>
 <!-- Related Products -->
 <!--  -->
 

@@ -64,7 +64,32 @@ const userSchema = new mongoose.Schema({
     grandTotal :{
         type : Number,
         default:0
-    }
+    },
+    wallet: {
+        balance: {
+            type: Number,
+            default: 0,
+        },
+        transactions: [{
+            amount: {
+                type: Number,
+                required: true,
+            },
+            description: {
+                type: String,
+                required: true,
+            },
+            type: {
+                type: String,
+                enum: ['Credit', 'Debit'],
+                required: true,
+            },
+            timestamp: {
+                type: Date,
+                default: Date.now,
+            }
+        }],
+    },
     
 })
 

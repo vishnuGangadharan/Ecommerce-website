@@ -5,6 +5,8 @@ const productCategory = require("../../Models/categoryModel");
 const product = require("../../Models/productModel");
 const Order = require('../../Models/orderModel');
 const Return = require("../../Models/returnProductModel");
+const { editproduct } = require("./productControl");
+// const Wallet = require('../../Models/walletmodel')
 
 
 const loadOrder = async (req, res) => {
@@ -59,7 +61,7 @@ const updateActionOrder = async (req, res) => {
 
 const getReturnRequests = async (req, res) => {
     try{
-    const ITEMS_PER_PAGE = 5;  // Define the number of items to display per page
+    const ITEMS_PER_PAGE = 10;  // Define the number of items to display per page
     const page = parseInt(req.query.page) || 1; // Extract the page from the query string
     const totalRequests = await Return.countDocuments(); // Count the total number of return requests
     const returnRequests = await Return.find()
@@ -98,24 +100,40 @@ const returnRequestAction = async (req, res, next) => {
             foundRequet.status = "Rejected";
             currentProduct.returnRequested = "Rejected"
         }else{
-
+            console.log(foundOrders.totalAmount);
             const currentUser = await User.findById(foundOrders.user)
+
             const EditProduct = await product.findOne({_id: req.body.product})
 
             const currentStock = EditProduct.stock_count;
-            console.log("start",currentStock);
+            // console.log("start",currentStock);
             EditProduct.stock_count = currentStock + foundRequet.quantity;
-            console.log("end",currentStock);
+            // console.log("end",currentStock);
             await EditProduct.save();
             //for adding wallet
             // Save changes to the user's wallet, canceled product, and order
-            // await currentUser;
-
+            console.log("foundOrders.totalAmount",foundOrders.totalAmount);
+          const refundamount = foundOrders.totalAmount
+        //     currentUser.wallet.balance = refundamount;
+            const testcase = await User.updateOne(
+                { _id: req.session.user },
+                { $inc: { 'wallet.balance': refundamount } }
+              );
+                const transactionData = {
+                    amount: refundamount,
+                    description: "Returned Product",
+                    type: 'Credit',
+                }
+              currentUser.wallet.transactions.push(transactionData)
+            // console.log(currentUser);
+            // console.log('currentUser.wallet.balance',testcase);
             foundRequet.status = 'Completed';
             currentProduct.returnRequested = 'Completed';
+            await currentUser.save();
         }
         await foundRequet.save();
         await foundOrders.save();
+        
         res.redirect('/admin/return-requests');
     }catch(error){
         console.log(error.message);
@@ -129,13 +147,48 @@ const updateOrderCancel = async (req,res) => {
     try{
         const products = await product.findById(req.query.orderId)
         const foundOrder = await Order.findById(req.query.orderId)
-        console.log(foundOrder.products);
+        const currentUser  = await User.findById(req.session.user)
+        // console.log("bf",foundOrder.products[0].quantity);
         for (let i = 0; i < foundOrder.products.length; i++) {
             
             foundOrder.products[i].isCancelled = true
+            if(foundOrder.paymentMethod === 'wlt' && foundOrder.products[i].isCancelled === true){
+       
+                 const refundamount = foundOrder.totalAmount
+        //     currentUser.wallet.balance = refundamount;
+            const testcase = await User.updateOne(
+                { _id: req.session.user },
+                { $inc: { 'wallet.balance': refundamount } }
+              );
+
+              const transactionData = {
+                amount: refundamount,
+                description: 'Order cancelled.',
+                type: 'Credit',
+            };
+            currentUser.wallet.transactions.push(transactionData);
+
+            // Save changes to the user's wallet, canceled product, and order
+            await currentUser.save();
+
+             }
+
+            if(foundOrder.paymentMethod === 'wlt' || foundOrder.paymentMethod === 'cod' && foundOrder.products[i].isCancelled === true) {
+                
+                foundOrder.totalAmount -= foundOrder.totalAmount;
+                if (foundOrder.totalAmount === 5) {
+                    foundOrder.totalAmount = 0;
+                  }
+                 const num =  foundOrder.products[i].quantity
+                 
+                 await product.updateOne({ _id:foundOrder.products[i].product  }, { $inc: { stock_count: num } })
+             
+     
+
+            }
         }
-
-
+        
+        
         foundOrder.status = req.query.action
 
         await foundOrder.save()
@@ -146,10 +199,126 @@ const updateOrderCancel = async (req,res) => {
     }
 }
 
+
+
+const loadSalesReport = async(req,res)=>{
+    try{
+        let startOfMonth;
+        let endOfMonth;
+        if(req.query.filtered){
+            startOfMonth = new Date(req.body.form);
+            endOfMonth = new Date(req.body.upto);
+            endOfMonth.setHours(23, 59, 59, 999);
+
+        }else{
+            const today = new Date();
+            startOfMonth = new Date(today.getFullYear(),today.getMonth(), 1);
+            endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        }
+        var orderStatusFilter = {status: {$in: ["Processing","Shipped","Cancelled","Delivered"]}}
+         // Check if order status is provided in the request
+         if (req.body.status) {
+            if (req.body.status === "Cancelled") {
+                orderStatusFilter = { "products.isCancelled": true };
+            } else if (req.body.status === "Returned") {
+                orderStatusFilter = { "products.returnRequested": "Completed" };
+            } else {
+                orderStatusFilter = {
+                    status: req.body.status,
+                    "products.isCancelled": { $ne: true },
+                    "products.returnRequested": { $ne: "Completed" },
+                };
+            }
+         }
+
+        const filteredOrders = await Order.aggregate([
+            {
+                $unwind: "$products" // Unwind the products array
+            },
+            {
+                $match: {
+                    // status: "Delivered",
+                    orderDate: {
+                        $gte: startOfMonth,
+                        $lte: endOfMonth
+                    },
+                    ...orderStatusFilter
+                }
+                  // Use the complete orderStatusFilter object
+            },
+            {
+                $lookup: {
+                    from: "products", // Replace with the actual name of your products collection (clarify it)
+                    localField:"products.product",
+                    foreignField:"_id",
+                    as: "productInfo"  // Store the product info in the "productInfo" array
+                }
+            },
+            {
+                $addFields: {
+                    "products.productInfo": {
+                        $arrayElemAt: ["$productInfo", 0]   // Get the first (and only) element of the "productInfo" array
+
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "user",
+                    foreignField: "_id",
+                    as: "userInfo"
+                }
+            },
+            {
+                $unwind: "$userInfo"
+            },
+            {
+                $project: {
+                    _id: 1,
+                    productInfo:1,
+                    userInfo: 1,
+                    totalAmount: 1,
+                    paymentMethod: 1,
+                    deliveryAddress: 1,
+                    status: 1,
+                    orderDate: 1,
+                    deliveryDate: 1,
+                    "products.quantity": 1,
+                    "products.total": 1,
+                    "products.isCancelled": 1,
+                    "products.returnRequested": 1,
+                    "products.productInfo": 1
+
+                }
+            }
+        ])
+        let orderDone = 0
+        let totalRevenue = 0
+        for(let i=0; i<filteredOrders.length; i++){
+            if(filteredOrders[i].status === "Delivered" && filteredOrders[i].products.returnRequested !== "Completed") {
+                orderDone += 1
+                totalRevenue += (filteredOrders[i].products.quantity*filteredOrders[i].products.productInfo.price)
+            }
+        }
+        console.log("orderdone",orderDone);
+        console.log("totalRevenue",totalRevenue);
+        console.log(filteredOrders);
+        res.render('admin/salesReport',{
+            salesReport: filteredOrders,
+            orderDone,
+            totalRevenue
+        })
+    }catch(error){
+        console.log(error);
+    }
+}
+
 module.exports  = { 
     loadOrder,
     updateActionOrder,
     getReturnRequests,
     returnRequestAction,
-    updateOrderCancel
+    updateOrderCancel,
+    loadSalesReport
 }

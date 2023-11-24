@@ -9,6 +9,8 @@ const nocache = require('nocache')
 const customerRoute = require("./routes/userRoutes")
 const adminRoutes = require('./routes/adminRoute')
 
+
+
 app.use(morgan('dev'));
 app.use(nocache())
 app.set('view engine', 'ejs')

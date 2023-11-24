@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pay with Razorpay</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <!-- SweetAlert CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<!-- SweetAlert JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script
+      src="https://checkout.razorpay.com/v1/checkout.js"
+      data-key="<%= key_id %>"
+    ></script>
+  </head>
+
+  <body>
+    <h5 id="heading" style="display: block">Payment processing...</h5>
+    <p id="error" style="color: red"></p>
+    <a id="link" href="/checkout" style="display: none">Go back to checkout</a>
+    <script>
+      const headingElement = document.getElementById("heading");
+      const errorElement = document.getElementById("error");
+      const linkElement = document.getElementById("link");
+
+       // SweetAlert function
+    function showCancelAlert() {
+      
+    }
+
+      // Initialize Razorpay checkout
+      var options = {
+        key: "<%= key_id %>",
+        amount: "<%= order.amount %>", // Amount in paise
+        currency: "INR",
+        name: "Coza store",
+        description: "Order Payment",
+        order_id: "<%= order.id %>", // Order ID from the server
+
+        "modal": {
+    "ondismiss": function () {
+        // Code to execute when the modal is dismissed
+      
+        Swal.fire({
+        title: "Are you sure?",
+        // text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Go Back",
+        allowOutsideClick: false, // Prevent closing by clicking outside
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location="/product/cart/checkout"
+        }
+      });
+    }
+},
+        handler: function (response) {
+          console.log("<%= order.id %>");
+          if (response.razorpay_payment_id) {
+            const transactionId = response.razorpay_payment_id;
+            const orderId = response.razorpay_order_id;
+            const signature = response.razorpay_signature;
+            // Handle successful payment
+            // Send an AJAX POST request to save the order
+            console.log(orderId, transactionId, signature);
+            const requestData = {
+              transactionId,
+              orderId,
+              amount: "<%= order.amount %>",
+              signature,
+            };
+
+            fetch("/save-rzporder", {
+              method: "POST",
+              body: new URLSearchParams(requestData),
+            })
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+                return response.json();
+              })
+              .then((data) => {
+                console.log("fff");
+                window.location.href = "/cart/order";
+              })
+              .catch((error) => {
+                console.error(
+                  "There was a problem with the fetch operation:",
+                  error
+                );
+              });
+          } else {
+            // Display a message or handle it appropriately
+            headingElement.style.display = "none";
+            errorElement.textContent = "Payment was canceled or unsuccessful";
+            linkElement.style.display = "block";
+          }
+        },
+        prefill: {
+          name: "<%= user.name %>",
+          email: "<%= user.email %>",
+          contact: "<%= user.mobile %>",
+        },
+        theme: {
+          color: "#4B49AC",
+        },
+      };
+
+      var rzp = new Razorpay(options);
+      rzp.open();
+    </script>
+  </body>
+</html>

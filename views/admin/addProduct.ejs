@@ -9,19 +9,21 @@
       <!-- <p class="card-description">
         Basic form elements
       </p> -->
-      <form class="forms-sample" method="post" action="/admin/product/addproduct" enctype="multipart/form-data" style="width: 70%;">
+      <form class="forms-sample" method="post" action="/admin/product/addproduct" enctype="multipart/form-data" style="width: 70%;" id="register-form">
         <% if(message !== ""){ %>
           <p class="text-danger"><%= message %></p>
         <% } %>
 
         <div class="form-group">
           <label for="exampleInputName1">Product Name</label>
-          <input type="text" name="productName" class="form-control" id="exampleInputName1" placeholder="Name" required>
+          <input type="text" name="productName" class="form-control" id="exampleInputName1" placeholder="Name" >
+          <p class="text-danger" id="name-error-display"></p>
         </div>
 
         <div class="form-group">
           <label for="exampleInputEmail3">Brand name</label>
-          <input type="text" name="brandName" class="form-control" id="exampleInputEmail3" placeholder="Brand" required>
+          <input type="text" name="brandName" class="form-control" id="exampleInputBrand" placeholder="Brand" >
+          <p class="text-danger" id="brand-error-display"></p>
         </div>
 
          <!-- Product Categories and Tags -->
@@ -44,7 +46,7 @@
 
         <div class="form-group">
           <label for="exampleInputPassword4">Price</label>
-          <input type="number" name="price" class="form-control" id="exampleInputPassword4" placeholder="price" required>
+          <input type="number" name="price" class="form-control" id="exampleInputPrice" placeholder="price" >
         </div>
 
        
@@ -58,11 +60,13 @@
 
         <div class="form-group">
           <label for="exampleInputCity1">Stock Count</label>
-          <input type="number" name="stockCount" class="form-control" id="exampleInputCity1" placeholder="Count" required>
+          <input type="number" name="stockCount" class="form-control" id="exampleInputCount" placeholder="Count" >
+          <p class="text-danger" id="count-error-display"></p>
         </div>
         <div class="form-group">
           <label for="description">Description</label>
-          <textarea class=" form-control" id="description" name="description" rows="8" placeholder="Write about the Product" required></textarea>
+          <textarea class=" form-control" id="description" name="description" rows="8" placeholder="Write about the Product"></textarea>
+          <p class="text-danger" id="description-error-display"></p>
         </div>
 
         <!-- <div class="col-md-12 grid-margin stretch-card">
@@ -80,7 +84,7 @@
             </div>
           </div>
         </div> -->
-
+        <p class="text-danger" id="common-error-display"></p>
         <button type="submit" class="btn btn-primary mr-2">Submit</button>
         <button type="reset" class="btn btn-light">Cancel</button>
       </form>
@@ -94,4 +98,42 @@
     <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with <i class="ti-heart text-danger ml-1"></i></span>
   </div>
 </footer> -->
+<script>
+
+  const form = document.getElementById('register-form')
+  const productName = document.getElementById('exampleInputName1');
+  const brand = document.getElementById("exampleInputBrand")
+  const description = document.getElementById('description')
+  const count = document.getElementById('exampleInputCount')
+
+  form.addEventListener('submit', (event) => {
+  let hasErrors = false;
+
+  // Clear previous error messages
+  document.getElementById('name-error-display').innerText = "";
+  document.getElementById("brand-error-display").innerText = "";
+  document.getElementById('description-error-display').innerText = "";
+  document.getElementById('exampleInputCount').innerText = "";
+
+  if (!productName.value || !brand.value || !description.value || !count.value) {
+    hasErrors = true;
+    document.getElementById("common-error-display").innerText = "Please fill in all fields.";
+  } else {
+    const specialCharacters = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/;
+    if (specialCharacters.test(productName.value)) {
+      hasErrors = true;
+      document.getElementById('name-error-display').innerText = "Name cannot contain any special characters";
+    }
+  }
+  if (hasErrors) {
+    event.preventDefault();
+  }
+});
+
+
+</script>
+
+
+
+
 <%-include("../partials/admin/footer")%>

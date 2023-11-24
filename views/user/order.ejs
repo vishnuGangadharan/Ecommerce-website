@@ -40,6 +40,7 @@
                               <%= item.deliveryAddress.place %>,
                               <%= item.deliveryAddress.post %>,
                               <%= item.deliveryAddress.postCode %>
+                              <%= item.deliveryAddress.district %>
                             </p>
                             <div class="d-flex">
                               <div>
@@ -111,6 +112,17 @@
                         </div>
                         <% }) %>
                         <% } %>
+
+
+                        <div class="pagination mb-3" style="margin-top: 15px;">
+
+                          <% for (let i = 1; i <= totalPages; i++) { %>
+                            <a href="?page=<%= i %>" class="page-link"><%= i %></a>
+                          <% } %>
+        
+                      </div>
+
+
                         <div class="row">
                           <div class="col-md-6">
                             <div class="row">

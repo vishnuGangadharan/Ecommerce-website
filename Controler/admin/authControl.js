@@ -63,10 +63,19 @@ const checkAdmin = async(req,res) =>{
     }
 }
 
+const logoutAdmin = (req,res)=>{
+    try{
+        req.session.destroy();
+        res.redirect('/admin/login')
+    }catch(error){
+        console.log(error);
+    }
+}
 module.exports = {
     dashboard,
     loadLogin,
     validAdmin,
-    checkAdmin
+    checkAdmin,
+    logoutAdmin
 
 }

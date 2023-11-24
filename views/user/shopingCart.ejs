@@ -52,6 +52,7 @@
 											<img src="data:<%= item.product.images[0].contentType %>;base64,<%= item.product.images[0].data.toString('base64') %>" alt="IMG">
 										</div>
 									</td>
+									
 									<td class="column-2"><%= item.product.product_name%></td>
 									<td class="column-3"><%= item.product.price %></td>
 									<td class="column-4">
@@ -151,41 +152,15 @@
 		
 
 	<script>
+		 const alertBox = document.getElementById("alert-box");
+  const flashMessage = document.getElementById("flash-message");
+
 		function updateCartItem(cartItemId, incOrDec) {
 
                         const data = {
                             type: incOrDec
                         };
-                        // $.ajax({
-                        //     url: `/update-cart/${cartItemId}`,
-                        //     type: 'POST',
-                        //     data: JSON.stringify(data),
-                        //     contentType: 'application/json',
-                        //     success: function (response) {
-                        //         console.log(response);
-                        //         // if (response.message === "Insufficient stock.") {
-                        //         //     const stockErrorElement = document.getElementById(`stock_${cartItemId}`);
-                        //         //     stockErrorElement.style.display = 'block';
-                        //         // } else {
-                        //         //     $('#totalPrice_' + cartItemId).text('₹' + response.totalPrice.toFixed(2));
-                        //         //     $('#subTotalPrice').text('₹' + response.grandTotal.toFixed(2));
-                        //         //     $('#totalPrice').text('₹' + response.grandTotal.toFixed(2));
-                        //         //     $('#quantityElement_' + cartItemId).val(response.quantity);
-                        //         //     const stockErrorElement = document.getElementById(`stock_${cartItemId}`);
-                        //         //     if (response.insufficientStock) {
-                        //         //         stockErrorElement.style.display = 'block';
-                        //         //         proceedBtn.classList.add('disabled-link');
-                        //         //     } else {
-                        //         //         stockErrorElement.style.display = 'none';
-                        //         //         proceedBtn.classList.remove('disabled-link');
-                        //         //     }
-                        //         // }
-                        //     },
-                        //     error: function (xhr, status, error) {
-                        //         console.log(status);
-                        //     }
-                        // });
-
+                    
 
 						fetch(`/update-cart/${cartItemId}`,{method:'POST',body:new URLSearchParams(data)})
 						.then(res=>{
@@ -202,13 +177,17 @@
                             $('#quantityElement_' + cartItemId).val(response.quantity);
                           
 						
-
-
-							
-								
+	
 								
 						})
 					    }else{
+							flashMessage.textContent = "stock limit exceed";
+          flashMessage.style.display = "inline-block";
+          alertBox.style.display = "block";
+          setTimeout(() => {
+            flashMessage.style.display = "none";
+            alertBox.style.display = "none";
+          }, 2000);
 							console.log("ooooooooo");		
 						 document.getElementById(`quantityElement_${cartItemId}`).value =  document.getElementById(`quantityElement_${cartItemId}`).value - 1
 						}
