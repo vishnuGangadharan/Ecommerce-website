@@ -72,8 +72,9 @@
             const requestData = {
               transactionId,
               orderId,
-              amount: "<%= order.amount %>",
+              amount: "<%= (parseInt(order.amount) + 5) %>",
               signature,
+              usedCoupon:'<%=usedCoupon.coupon%>'||null
             };
 
             fetch("/save-rzporder", {

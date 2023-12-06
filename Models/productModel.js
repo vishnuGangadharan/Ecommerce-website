@@ -44,6 +44,10 @@ const productSchema = new mongoose.Schema({
     is_delete : {
         type:Boolean,
         default:false
+    },
+    offer:{
+        type:Number,
+        default:0
     }
 })
 

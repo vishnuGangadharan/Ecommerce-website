@@ -90,6 +90,18 @@ const userSchema = new mongoose.Schema({
             }
         }],
     },
+    earnedCoupons: [
+        {
+            coupon: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Coupon',
+            },
+            isUsed: {
+                type: Boolean,
+                default: false,
+            },
+        }
+    ],
     
 })
 

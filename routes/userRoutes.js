@@ -5,7 +5,7 @@ const Controler = require('../Controler/user/registerAndLogin')
 const productControl = require('../Controler/admin/productControl')
 const cartControl= require('../Controler/user/cartControl')
 const profileControl = require('../Controler/user/profileControl')
-
+const couponControl = require('../Controler/user/couponControl')
 const multer = require("multer")
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage });
@@ -18,9 +18,17 @@ user_route.post('/userlogin',Auth.userloggedout,Controler.uservalidation)
 user_route.get('/register',Auth.userloggedout,Controler.loadRegiser)
 user_route.post('/register',Auth.userloggedout,Controler.insertUser)
 user_route.post('/verificaton',Controler.otpVarification)
+//resend otp
+user_route.get('/resendOTPSignup',Auth.userloggedout,Controler.resendOTP)
+
+
 
 user_route.get('/shop',productControl.loadShop)
+user_route.post('/search-product',productControl.searchProducts)
 user_route.get('/product/Details/:id',productControl.productDetails)
+user_route.get('/categorySearch',productControl.filterByCategory)
+user_route.get('/priceFilter',productControl.priceFilter)
+
 
 user_route.get('/cart',Auth.checkToBlock,Auth.userAuth,cartControl.loadCart)
 user_route.post('/cart/:id/passdata',Auth.checkToBlock,Auth.userAuth,cartControl.addCart)
@@ -65,4 +73,7 @@ user_route.post('/changePass',Auth.userloggedout,Controler.changepass)
 
 user_route.get('/user/wallet',Auth.userAuth,Auth.checkToBlock,cartControl.getWallet)
 
+//coupons
+user_route.get('/coupons',Auth.userAuth,couponControl.showCoupon)
+user_route.post('/apply-coupon',Auth.userAuth,Auth.checkToBlock,couponControl.applyCoupon)
 module.exports = user_route

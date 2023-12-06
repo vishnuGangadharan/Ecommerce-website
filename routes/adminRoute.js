@@ -6,11 +6,12 @@ const userData = require('../Controler/admin/userdetails')
 const categoryControl = require('../Controler/admin/category')
 const productControl = require('../Controler/admin/productControl')
 const orderControl = require('../Controler/admin/orderController')
+const couponControl = require('../Controler/admin/couponControl')
 const multer = require('multer')
 const storage = multer.memoryStorage()
 const upload = multer({ storage:storage })
 
-
+const crop = require('../middileware/crop')
 
 admin_Routes.get('/dashboard',Auth.adminAuth,authControl.dashboard)
 
@@ -36,7 +37,7 @@ admin_Routes.get ('/product/desable/:id',Auth.adminAuth,categoryControl.category
 
 //product
 admin_Routes.get('/product/addproduct',Auth.adminAuth,productControl.loadaddproduct)
-admin_Routes.post('/product/addproduct',Auth.adminAuth,upload.array('image',3),productControl.addproduct)
+admin_Routes.post('/product/addproduct',Auth.adminAuth,upload.array('image',3),crop.multiCrop,productControl.addproduct)
 
 admin_Routes.get('/product/productlist',Auth.adminAuth,productControl.loadProductList)
 admin_Routes.get('/product/:id/edit',Auth.adminAuth,productControl.loadedit)
@@ -58,5 +59,13 @@ admin_Routes.post('/return-requests',Auth.adminAuth,orderControl.returnRequestAc
 //salesreport
 admin_Routes.get("/sales-report",Auth.adminAuth,orderControl.loadSalesReport)
 admin_Routes.post("/sales-report",Auth.adminAuth,orderControl.loadSalesReport)
+
+
+//coupons
+admin_Routes.get('/addCoupons',Auth.adminAuth,couponControl.loadAddCoupon)
+admin_Routes.get('/showCoupon',Auth.adminAuth,couponControl.getCoupons)
+admin_Routes.post('/saveCoupon',Auth.adminAuth,couponControl.saveCoupon)
+admin_Routes.get('/couponStatus/:id',Auth.adminAuth,couponControl.couponAction)
+
 
 module.exports = admin_Routes

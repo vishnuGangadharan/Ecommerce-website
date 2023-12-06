@@ -13,7 +13,12 @@
           <input class="m-1" type="date" name="upto">
   
           <button class="btn btn-outline-primary btn-sm m-1" type="submit">Apply date</button>
+
         </form>
+
+          <button id="downloadPdfBtn" onclick="exportToPDF()"  class="btn btn-primary">Download PDF</button>
+
+
         <form action="/admin/sales-report" method="post">
   
           <div class="row d-flex mt-2 mb-2">
@@ -39,7 +44,7 @@
   
         </form>
         <div class="table-responsive">
-          <table class="table table-striped">
+          <table id="salesReportTable" class="table table-striped">
             <thead>
               <tr>
                 <th>
@@ -64,6 +69,7 @@
                 </td>
               </tr>
               <% } else { %>
+                <%console.log(salesReport)%>
               <% salesReport.forEach((report) => { %>
               <tr class=" border-bottom">
                 <td>
@@ -120,5 +126,23 @@
       </div>
     </div>
   </div>
+
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  <script>
+      function exportToPDF() {
+          const { jsPDF } = window.jspdf;
+          console.log(jsPDF)
+          const doc = new jsPDF();
+          console.log("sdddd");
+          doc.autoTable({ html: '#salesReportTable' });
+          doc.save('sales_report.pdf');
+      }
+</script>
+
+
 
 <%- include("../partials/admin/footer") %>

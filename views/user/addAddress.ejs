@@ -1,126 +1,273 @@
-
-
 <%- include('../partials/user/header')%>
 
 <div class="col-12 grid-margin">
-    <div class="card mt-5 mb-5">
-        <% if(typeof message !=='undefined' ){ %>
-            <div class="alert alert-danger " style="font-size :20px">
-                <%= message %>
-            </div>
-        <% } %>
-      <div class="card-body">
-        <h4 class="card-title">Personal info </h4>
-        <form method="post" action="/profile/addAddress" class="form-sample">
-          <p class="card-description">
-            <!-- Personal info -->
-          </p>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Name</label>
-                <div class="col-sm-9">
-                  <input type="text" name="name" class="form-control" required/>
-                </div>
+  <div class="card mt-5 mb-5">
+    <% if(typeof message !=='undefined' ){ %>
+    <div class="alert alert-danger" style="font-size: 20px"><%= message %></div>
+    <% } %>
+    <div class="card-body">
+      <h4 class="card-title">Personal info</h4>
+      <form
+        method="post"
+        action="/profile/addAddress"
+        class="form-sample"
+        id="register-form"
+      >
+        <p class="card-description">
+          <!-- Personal info -->
+        </p>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">Name</label>
+              <div class="col-sm-9">
+                <input id="name" type="text" name="name" class="form-control" />
               </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Place</label>
-                <div class="col-sm-9">
-                  <input type="text" name="place" class="form-control" required/>
-                </div>
-              </div>
+              <p class="text-danger" id="name-error-display"></p>
+
             </div>
           </div>
-          <div class="row pt-3">
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Email</label>
-                <div class="col-sm-9">
-                    <input type="email" name="email" class="form-control" required/>
 
-                </div>
+          <div class="col-md-6">
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">Place</label>
+              <div class="col-sm-9">
+                <input
+                  type="text"
+                  id="place"
+                  name="place"
+                  class="form-control"
+                />
               </div>
+              <p class="text-danger" id="place-error-display"></p>
             </div>
-            <div class="col-md-6">
-                <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Post</label>
-                  <div class="col-sm-9">
-                      <input type="text" name="post" class="form-control" required/>
-  
-                  </div>
-                </div>
-              </div>
-            <!-- <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Date of Birth</label>
-                <div class="col-sm-9">
-                  <input class="form-control" placeholder="dd/mm/yyyy"/>
-                </div>
-              </div>
-            </div> -->
           </div>
+        </div>
 
-
+        <div class="row pt-3">
+          <div class="col-md-6">
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" >Email</label>
+              <div class="col-sm-9">
+                <input
+                id="email"
+                  type="email"
+                  name="email"
+                  class="form-control" />
+              </div>
+              <p class="text-danger" id="email-error-display"></p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">Post</label>
+              <div class="col-sm-9">
+                <input type="text" id="post" name="post" class="form-control" />
+              </div>
+              <p class="text-danger" id="post-error-display"></p>
+            </div>
+          </div>
          
+        </div>
 
-          
-          <div class="row pt-3">
-            <div class="col-md-6">
+        <div class="row pt-3">
+          <div class="col-md-6">
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Mobile Number</label>
                 <div class="col-sm-9">
-                  <input type="number" name="mobile" class="form-control"  required/>
+                  <input type="number" id="number" name="mobile" class="form-control" />
                 </div>
+                <p class="text-danger" id="number-error-display"></p>
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">PIN code</label>
                 <div class="col-sm-9">
-                  <input type="number" name="pincode" class="form-control" required/>
+                  <input
+                    type="number"
+                    id="pin"
+                    name="pincode"
+                    class="form-control"
+                  />
                 </div>
+                <p class="text-danger" id="pin-error-display"></p>
               </div>
             </div>
-          </div>
-          <div class="row pt-3">
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">House Name</label>
-                <div class="col-sm-9">
-                  <input type="text" name="house" class="form-control" required/>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">District</label>
-                <div class="col-sm-9">
-                  <input type="text" name="district" class="form-control" required/>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row pt-3">
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">State/Region</label>
-                <div class="col-sm-9">
-                  <input type="text" name="state" class="form-control" required/>
-                </div>
-              </div>
-            </div>
-          
-          </div>
-          <div class="mt-5 d-flex justify-content-center align-items-center">
-            <button class="btn btn-primary" type="submit">Submit</button>
         </div>
-        
-        </form>
-      </div>
+        <div class="row pt-3">
+          <div class="col-md-6">
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">House Name</label>
+              <div class="col-sm-9">
+                <input
+                  type="text"
+                  id="house"
+                  name="house"
+                  class="form-control"
+                />
+              </div>
+              <p class="text-danger" id="house-error-display"></p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">District</label>
+              <div class="col-sm-9">
+                <input
+                  type="text"
+                  id="district"
+                  name="district"
+                  class="form-control"
+                />
+              </div>
+              <p class="text-danger" id="district-error-display"></p>
+            </div>
+          </div>
+        </div>
+        <div class="row pt-3">
+          <div class="col-md-6">
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">State/Region</label>
+              <div class="col-sm-9">
+                <input
+                  type="text"
+                  id="state"
+                  name="state"
+                  class="form-control"
+                />
+              </div>
+              <p class="text-danger" id="state-error-display"></p>
+            </div>
+          </div>
+        </div>
+        <div class="mt-5 d-flex justify-content-center align-items-center">
+          <button class="btn btn-primary" type="submit">Submit</button>
+        </div>
+        <p class="text-danger" id="common-error-display"></p>
+      </form>
     </div>
   </div>
+</div>
 
+<script>
+  // Clear previous error messages
+document.getElementById("common-error-display").innerHTML = "";
+document.getElementById("state-error-display").innerHTML = "";
+document.getElementById("place-error-display").innerHTML = "";
+document.getElementById("post-error-display").innerHTML = "";
+document.getElementById("pin-error-display").innerHTML = "";
+document.getElementById("house-error-display").innerHTML = "";
+document.getElementById("district-error-display").innerHTML = "";
+document.getElementById('email-error-display').innerHTML = "";
+document.getElementById('name-error-display').innerHTML = "";
+document.getElementById('number-error-display').innerHTML = "";
 
-  <%- include('../partials/user/footer')%>
+const form = document.getElementById("register-form");
+
+const nameInput = document.getElementById("name")
+const numberInput = document.getElementById("number")
+const emailInput = document.getElementById("email")
+const stateInput = document.getElementById("state");
+const placeInput = document.getElementById("place");
+const postInput = document.getElementById("post");
+const pinInput = document.getElementById("pin");
+const houseInput = document.getElementById("house");
+const districtInput = document.getElementById("district");
+
+form.addEventListener("submit", (event) => {
+  let hasErrors = false;
+
+  // Check if any of the required fields are empty
+  if (!stateInput.value) {
+    hasErrors = true;
+    document.getElementById("state-error-display").innerHTML =
+      "Please fill in the State/Region.";
+  } else if (!stateInput.value.match(/^[A-Za-z]+$/)) {
+    hasErrors = true;
+    document.getElementById("state-error-display").innerHTML =
+      "Please enter only alphabets for the State/Region.";
+  }
+
+  if (!placeInput.value) {
+    hasErrors = true;
+    document.getElementById("place-error-display").innerHTML =
+      "Please fill in the Place.";
+  } else if (!placeInput.value.match(/^[A-Za-z]+$/)) {
+    hasErrors = true;
+    document.getElementById("place-error-display").innerHTML =
+      "Please enter only alphabets for the Place.";
+  }
+
+  if (!postInput.value) {
+    hasErrors = true;
+    document.getElementById("post-error-display").innerHTML =
+      "Please fill in the Post.";
+  } else if (!postInput.value.match(/^[A-Za-z]+$/)) {
+    hasErrors = true;
+    document.getElementById("post-error-display").innerHTML =
+      "Please enter only alphabets for the Post.";
+  }
+
+  if (!houseInput.value) {
+    hasErrors = true;
+    document.getElementById("house-error-display").innerHTML =
+      "Please fill in the House Name.";
+  } else if (!houseInput.value.match(/^[A-Za-z]+$/)) {
+    hasErrors = true;
+    document.getElementById("house-error-display").innerHTML =
+      "Please enter only alphabets for the House Name.";
+  }
+
+  if (!districtInput.value) {
+    hasErrors = true;
+    document.getElementById("district-error-display").innerHTML =
+      "Please fill in the District.";
+  } else if (!districtInput.value.match(/^[A-Za-z]+$/)) {
+    hasErrors = true;
+    document.getElementById("district-error-display").innerHTML =
+      "Please enter only alphabets for the District.";
+  }
+
+  // Check email format
+  if (!emailInput.value) {
+    hasErrors = true;
+    document.getElementById("email-error-display").innerHTML =
+      "Please fill in a valid email address.";
+  } else if (!emailInput.value.match(/^[A-Za-z\._\-0-9]*[@][A-Za-z]*[\.][a-z]{2,4}$/)) {
+    hasErrors = true;
+    document.getElementById("email-error-display").innerHTML =
+      "Please enter a valid email address.";
+  }
+
+  // Check name format
+  if (!nameInput.value) {
+    hasErrors = true;
+    document.getElementById("name-error-display").innerHTML =
+      "Please fill in the Name.";
+  } else if (!nameInput.value.match(/^[A-Za-z]+$/)) {
+    hasErrors = true;
+    document.getElementById("name-error-display").innerHTML =
+      "Please enter only alphabets for the Name.";
+  }
+
+  // Check mobile number format
+  if (!numberInput.value) {
+    hasErrors = true;
+    document.getElementById("number-error-display").innerHTML =
+      "Please fill in a valid Mobile Number.";
+  } else if (!numberInput.value.match(/^\d{10}$/)) {
+    hasErrors = true;
+    document.getElementById("number-error-display").innerHTML =
+      "Please enter a valid 10-digit Mobile Number.";
+  }
+
+  // Check if any errors occurred
+  if (hasErrors) {
+    event.preventDefault();
+  }
+});
+
+</script>
+
+<%- include('../partials/user/footer')%>

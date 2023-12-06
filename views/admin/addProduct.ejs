@@ -1,14 +1,10 @@
 <%- include("../partials/admin/header") %>
 <%- include("../partials/admin/side") %>
 
-
 <div class="col-12 grid-margin stretch-card">
   <div class="card">
     <div class="card-body" style="margin: 40px;">
       <h3 class="card-title"> Add Product</h3>
-      <!-- <p class="card-description">
-        Basic form elements
-      </p> -->
       <form class="forms-sample" method="post" action="/admin/product/addproduct" enctype="multipart/form-data" style="width: 70%;" id="register-form">
         <% if(message !== ""){ %>
           <p class="text-danger"><%= message %></p>
@@ -16,29 +12,29 @@
 
         <div class="form-group">
           <label for="exampleInputName1">Product Name</label>
-          <input type="text" name="productName" class="form-control" id="exampleInputName1" placeholder="Name" >
+          <input type="text" name="productName" class="form-control" id="exampleInputName1" placeholder="Name">
           <p class="text-danger" id="name-error-display"></p>
         </div>
 
         <div class="form-group">
           <label for="exampleInputEmail3">Brand name</label>
-          <input type="text" name="brandName" class="form-control" id="exampleInputBrand" placeholder="Brand" >
+          <input type="text" name="brandName" class="form-control" id="exampleInputBrand" placeholder="Brand">
           <p class="text-danger" id="brand-error-display"></p>
         </div>
 
-         <!-- Product Categories and Tags -->
-         <div class="col-md-12 grid-margin stretch-card">
+        <div class="col-md-12 grid-margin stretch-card">
           <div class="card">
             <div class="card-body">
               <h4 class="card-title">Product Categories</h4>
               <div class="form-group">
                 <label for="category">Category</label>
                 <select class="form-control form-control-lg " name="category" id="category">
-                    
                   <% Categories.forEach((category) => { %>
                     <option><%= category.categoryName %></option>
-                   <% }) %>
+                  <% }) %>
                 </select>
+                <p class="text-danger" id="category-error-display"></p>
+
               </div>
             </div>
           </div>
@@ -46,44 +42,44 @@
 
         <div class="form-group">
           <label for="exampleInputPassword4">Price</label>
-          <input type="number" name="price" class="form-control" id="exampleInputPrice" placeholder="price" >
+          <input type="number" name="price" class="form-control" id="exampleInputPrice" placeholder="price">
+          <p class="text-danger" id="price-error-display"></p>
         </div>
 
-       
 
-          <div class="form-group">
-            <label>Images Upload (Required: 3)</label>
-            <div class="input-group col-md-12">
-              <input type="file" id="images" multiple  name="image" class="form-control file-upload-info" required>
-            </div>
+        <div class="form-group">
+          <label for="exampleInputPassword4">Offer Percentage</label>
+          <input type="number" name="offer" class="form-control" id="exampleInputOfferPrice" placeholder="offerprice">
+          <p class="text-danger" id="offerprice-error-display"></p>
+        </div>
+
+        <!-- <div class="form-group">
+          <label for="exampleInputPassword4">Offer Description</label>
+          <input type="number" name="offerdescription" class="form-control" id="exampleInputPrice" placeholder="offerprice">
+          <p class="text-danger" id="offerDescription-error-display"></p>
+        </div> -->
+
+        <div class="form-group">
+          <label>Images Upload (Required: 3)</label>
+          <div class="input-group col-md-12">
+            <input type="file" id="images" multiple name="image" class="form-control file-upload-info" onchange="displaySelectedImages()">
           </div>
+          <div id="selectedImagesContainer" style="margin-top: 10px;"></div>
+          <p class="text-danger" id="image-error-display"></p>
+        </div>
 
         <div class="form-group">
           <label for="exampleInputCity1">Stock Count</label>
-          <input type="number" name="stockCount" class="form-control" id="exampleInputCount" placeholder="Count" >
+          <input type="number" name="stockCount" class="form-control" id="exampleInputCount" placeholder="Count">
           <p class="text-danger" id="count-error-display"></p>
         </div>
+
         <div class="form-group">
           <label for="description">Description</label>
-          <textarea class=" form-control" id="description" name="description" rows="8" placeholder="Write about the Product"></textarea>
+          <textarea class="form-control" id="description" name="description" rows="8" placeholder="Write about the Product"></textarea>
           <p class="text-danger" id="description-error-display"></p>
         </div>
 
-        <!-- <div class="col-md-12 grid-margin stretch-card">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-description text-white">Availability</h5>
-              <div class="form-check">
-                <input type="checkbox" class="form-check-input" name="inStock" id="inStockRadio" value="inStock">
-                <label class="form-check-label" for="inStockRadio">In Stock</label>
-              </div>
-              <div class="form-check">
-                <input type="checkbox" class="form-check-input" name="outOfStock" id="inStockRadio" value="outOfStock">
-                <label class="form-check-label" for="outOfStockRadio">Out Of Stock</label>
-              </div>
-            </div>
-          </div>
-        </div> -->
         <p class="text-danger" id="common-error-display"></p>
         <button type="submit" class="btn btn-primary mr-2">Submit</button>
         <button type="reset" class="btn btn-light">Cancel</button>
@@ -92,48 +88,133 @@
   </div>
 </div>
 
-<!-- <footer class="footer">
-  <div class="d-sm-flex justify-content-center justify-content-sm-between">
-    <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2021.  Premium <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap admin template</a> from BootstrapDash. All rights reserved.</span>
-    <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with <i class="ti-heart text-danger ml-1"></i></span>
-  </div>
-</footer> -->
+<div id="addedProductsContainer">
+  <!-- The container where uploaded images will be dynamically displayed -->
+</div>
+
 <script>
+  function displaySelectedImages() {
+    const imagesInput = document.getElementById('images');
+    const selectedImagesContainer = document.getElementById('selectedImagesContainer');
 
-  const form = document.getElementById('register-form')
-  const productName = document.getElementById('exampleInputName1');
-  const brand = document.getElementById("exampleInputBrand")
-  const description = document.getElementById('description')
-  const count = document.getElementById('exampleInputCount')
+    // Clear existing images
+    selectedImagesContainer.innerHTML = '';
 
-  form.addEventListener('submit', (event) => {
-  let hasErrors = false;
+    if (imagesInput.files && imagesInput.files.length > 0) {
+      for (let i = 0; i < imagesInput.files.length; i++) {
+        const reader = new FileReader();
+        const newImage = document.createElement('img');
+        newImage.style.width = '100px'; // Set the desired width
+        newImage.style.height = 'auto'; // Maintain aspect ratio
+        newImage.style.marginTop = '10px';
 
-  // Clear previous error messages
-  document.getElementById('name-error-display').innerText = "";
-  document.getElementById("brand-error-display").innerText = "";
-  document.getElementById('description-error-display').innerText = "";
-  document.getElementById('exampleInputCount').innerText = "";
+        reader.onload = function (e) {
+          newImage.src = e.target.result;
+          selectedImagesContainer.appendChild(newImage);
+        };
 
-  if (!productName.value || !brand.value || !description.value || !count.value) {
-    hasErrors = true;
-    document.getElementById("common-error-display").innerText = "Please fill in all fields.";
-  } else {
-    const specialCharacters = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/;
-    if (specialCharacters.test(productName.value)) {
-      hasErrors = true;
-      document.getElementById('name-error-display').innerText = "Name cannot contain any special characters";
+        reader.readAsDataURL(imagesInput.files[i]);
+      }
     }
   }
-  if (hasErrors) {
-    event.preventDefault();
-  }
-});
+
+  const form = document.getElementById('register-form');
+  const productName = document.getElementById('exampleInputName1');
+  const brand = document.getElementById("exampleInputBrand");
+  const description = document.getElementById('description');
+  const count = document.getElementById('exampleInputCount');
+  const images = document.getElementById('images');
+  const addedProductsContainer = document.getElementById('addedProductsContainer');
+  const price = document.getElementById('exampleInputPrice');
+  const category = document.getElementById('category')
+  const offerprice = document.getElementById('exampleInputOfferPrice')
+
+  form.addEventListener('submit', (event) => {
+    let hasErrors = false;
+
+    document.getElementById('name-error-display').innerText = '';
+    document.getElementById('brand-error-display').innerText = '';
+    document.getElementById('description-error-display').innerText = '';
+    document.getElementById('count-error-display').innerText = '';
+    document.getElementById('common-error-display').innerText = '';
+    document.getElementById('image-error-display').innerText = '';
+    document.getElementById('category-error-display').innerText = '';
+    document.getElementById('price-error-display').innerText = '';
+    document.getElementById('offerprice-error-display').innerHTML= "";
+
+    // if (!productName.value || !brand.value || !description.value || !count.value || !images.value) {
+    //   hasErrors = true;
+    //   document.getElementById('common-error-display').innerText = 'Please fill in all fields.';
+
+      if(!productName.value ){
+        hasErrors = true;
+        document.getElementById('name-error-display').innerText = 'Name cannot contain any special characters'
+      }else {
+      const specialCharacters = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/;
+      if (specialCharacters.test(productName.value)) {
+        hasErrors = true;
+        document.getElementById('name-error-display').innerText = 'Name cannot contain any special characters';
+      }
+    }
+    if(!brand.value ){
+      hasErrors = true;
+      document.getElementById('brand-error-display').innerText = 'please add a Brand name '
+    }
+    if(!description.value){
+      hasErrors = true;
+        document.getElementById('description-error-display').innerText = 'please insert description'
+    }
+    if(!count.value){
+      hasErrors = true;
+        document.getElementById('count-error-display').innerText = 'please insert count'
+    }
+    if(!images.value){
+      hasErrors = true;
+        document.getElementById('image-error-display').innerText = 'please insesrt images'
+    }
+    if(!price.value){
+      hasErrors = true;
+        document.getElementById('price-error-display').innerText = 'please insesrt images'
+    }
+    if(!category.value){
+      hasErrors = true;
+        document.getElementById('category-error-display').innerText = 'please insesrt images'
+    }if (!offerprice.value) {
+      hasErrors = true;
+  document.getElementById('offerprice-error-display').innerHTML = "Please insert offer value or 0";
+} else if (offerprice.value >= price.value / 2) {
+  hasErrors = true;
+  document.getElementById('offerprice-error-display').innerHTML = "Offer value must be below than 50% of price";
+}else if(offerprice.value < 0){
+   hasErrors = true;
+  document.getElementById('offerprice-error-display').innerHTML = "Offer value must be above 0 or 0";
+
+}
 
 
+
+    // Display the uploaded images in the addedProductsContainer
+    const imagesInput = document.getElementById('images');
+    if (imagesInput.files && imagesInput.files.length > 0) {
+      for (let i = 0; i < imagesInput.files.length; i++) {
+        const reader = new FileReader();
+        const newImage = document.createElement('img');
+        newImage.style.width = '100px'; // Adjust the size as needed
+        newImage.style.height = 'auto'; // Maintain aspect ratio
+
+        reader.onload = function (e) {
+          newImage.src = e.target.result;
+          addedProductsContainer.appendChild(newImage);
+        };
+
+        reader.readAsDataURL(imagesInput.files[i]);
+      }
+    }
+
+    if (hasErrors) {
+      event.preventDefault();
+    }
+  });
 </script>
 
-
-
-
-<%-include("../partials/admin/footer")%>
+<%- include("../partials/admin/footer") %>

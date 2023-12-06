@@ -16,7 +16,7 @@ const loadAddCategory = (req, res) => {
   const addProductCategory = async (req, res) => {
     //!req.body.categoryName is given as name filed in form || !req.file used in multer
     try {
-      if (!req.body.categoryName || !req.file) {
+      if (!req.body.categoryName || !req.file ) {
         return res.render("admin/addCategory", {
           message: "All fields must be filled",
         });
@@ -28,6 +28,7 @@ const loadAddCategory = (req, res) => {
         const category = new productCategory({
           categoryName: req.body.categoryName,
           description: req.body.description,
+          offer: req.body.offer,
           image: {
             data: req.file.buffer,
             contentType: req.file.mimetype,
@@ -49,7 +50,7 @@ const loadAddCategory = (req, res) => {
   
 
 
-  const loadProductCategory = async (req, res) => {
+  const   loadProductCategory = async (req, res) => {
     try {
       const categories = await productCategory.find().sort({ _id: -1 });
       res.render("admin/productCategory", { categories });
@@ -110,12 +111,13 @@ const loadEditCategory = async(req,res) =>{
 
 const editCategory = async (req, res) => {
   try {
-    const { description, categoryName } = req.body;
+    const { description, categoryName,offer } = req.body;
     const id = req.params.id; // Extract the ID from req.params
 console.log(req.body);
     const data = {
       categoryName: categoryName,
       description: description,
+      offer:offer
     };
 
     const updateCategory = await productCategory.findByIdAndUpdate(id, { $set: data }, { new: true });

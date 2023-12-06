@@ -1,6 +1,6 @@
 
-                <!DOCTYPE html>
-                <html lang="en">
+                <!-- <!DOCTYPE html>
+                <html lang="en"> -->
                 
                 <%- include('../partials/user/header')%>
                 
@@ -16,6 +16,30 @@
                       </div>
                     </div>
                 
+
+
+
+
+                    <form action="/cart/order" id="search"  >
+                      <div class="row d-flex">
+                        <div class="col-10">
+                        <!-- Status filter dropdown -->
+                        <select name="status" class="form-select mt-3 mb-3" style="margin-left: 50px;">
+                         <option value="">All Status</option>
+                         <option value="Processing">Processing</option>
+                         <option value="Shipped">Shipped</option>
+                         <option value="Delivered">Delivered</option>
+                         <option value="Cancelled">Cancelled</option>
+                        </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary col-2 mt-3 mb-3" style="margin-left: -60px;">Apply Filters</button>
+                      </div>           
+                  </form>
+      
+
+
+
+
                     <div class="site-section">
                       <div class="container">
                         <% if (!order.length) { %>
@@ -24,7 +48,7 @@
                         <% order.forEach((item)=> { %>
                         <div class="d-flex flex-column flex-md-row border p-3 mb-3">
                           <div class="col-md-3 col-12 d-flex justify-content-center mb-5">
-                            <a href="/single/<%= item.orderedProducts[0]._id %>">
+                            <a href="">
                               <img src="data:<%= item.orderedProducts[0].images[0].contentType %>;base64,<%= item.orderedProducts[0].images[0].data.toString('base64') %>" alt="Image" height="180px" width="180px" class="img-fluid">
                             </a>
                           </div>

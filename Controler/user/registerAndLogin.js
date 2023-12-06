@@ -62,7 +62,7 @@ const insertUser = async (req,res,next) => {
     if(email && username && phone && password && confirmPassword){
         const foundUser = await User.findOne({$or:[{userName:username},{email:email}]})
 
-        if(foundUser){
+        if(foundUser.is_varified===true){
             res.render('user/userRegister',{message:"user already exist"})
         }else{
             if(password=== confirmPassword){
@@ -97,7 +97,7 @@ const insertUser = async (req,res,next) => {
 const otpVarification = async(req,res) =>{
     try{
         const {OTP,ID} = req.body;
-        console.log();
+        console.log(OTP);
         if(!OTP){
            return res.render('user/verification',{message:"Cannot send empty message",id:ID})
         }
@@ -111,9 +111,9 @@ const otpVarification = async(req,res) =>{
             return res.render('user/verification',{message:'OTP has been expired,Please try again' ,id:ID})
         }
         console.log("11"+OTP,otp);
-        const isvalid = await bcrypt.compare(OTP,otp);
-        
-        console.log("11"+OTP+"helo"+otp);
+        const isvalid =  bcrypt.compare(OTP,otp);
+        console.log(isvalid);
+        console.log("11  "+OTP+"   helo   "+otp);
         if(!isvalid){
             return res.render('user/verification',{message:'The entered OTP is invalid',id:ID})
         }
@@ -217,7 +217,9 @@ const forgetPassword = async(req,res) =>{
                         userId:findUser._id,
                         otp:hashedOTP,
                         createAt: Date.now(),
-                        expireAt: Date.now() + 3600000,
+                        //5minuts will expair
+                        expireAt: Date.now() + 300000,
+
                     })
 
                     await newUserOPTVerification.save()
@@ -253,10 +255,10 @@ const verifyOTPForgetPassPage = async (req,res) =>{
         let { otp ,userId} = req.body;
         if(!otp || !userId){
             console.log(userId);
+            console.log(otp);
             res.render('user/forgetPassOTP',{message:"Empty details are not allowed",userId})
         }else{
             const UserOTPVerificationRecords = await userOTP.find({userId})
-            console.log("here",);
             if(UserOTPVerificationRecords.length <=0){
                  //no record found
                 res.render("user/forgetPassOTP",{message:"Account does not exist",userId})
@@ -272,7 +274,12 @@ const verifyOTPForgetPassPage = async (req,res) =>{
                      res.render("user/forgetPassOTP", { message: "Code has expires. Please request again.", userId })
 
                  }else{
-                    const validOTP = await bcrypt.compare(otp,hashedOTP)
+                    console.log("hereeee");
+                    console.log(hashedOTP);
+                    console.log(otp);
+                    const validOTP =  bcrypt.compare(otp,hashedOTP)
+                    
+                    console.log(validOTP);
                     if(!validOTP){
                         //supplied otp is wrong
                         res.render("user/forgetPassOTP", { message: "Invalid OTP. Check your Email.", userId })
@@ -314,6 +321,27 @@ const changepass = async (req,res) => {
     }
 }
 
+
+const resendOTP = async(req,res) =>{
+    try{
+       if(req.query.userId){
+        console.log("hey",req.query.userId);
+        const curentuser = await User.findById(req.query.userId)
+        const emailid = curentuser.email
+        sendMail(req,res,curentuser._id,emailid,false)
+        if(!curentuser){
+            console.log("not found");
+        }
+       }else{
+        res.redirect('/userLogin')
+       }
+       
+
+    }catch(error){
+        console.log(error);
+    }
+}
+
  
 module.exports = {
     loadhome,
@@ -327,6 +355,6 @@ module.exports = {
     forgetPassword,
     loadOTPForgetPassPage,
     verifyOTPForgetPassPage,
-    changepass
-
+    changepass,
+    resendOTP
 }

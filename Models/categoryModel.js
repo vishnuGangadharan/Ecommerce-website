@@ -17,7 +17,11 @@ const productCategrySchema = new mongoose.Schema({
     image:{
         data:Buffer,
         contentType:String
-    }
+    },
+    offer:{
+        type:Number,
+        default:0
+    },
 })
 const productCategory = mongoose.model(
     "productCategry",

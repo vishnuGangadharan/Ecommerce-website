@@ -5,47 +5,47 @@
   <div class="container">
     <div class="flex-w flex-sb-m p-b-52">
       <div class="flex-w flex-l-m filter-tope-group m-tb-10">
-        <button
+        <a href="/shop" > <button
           class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1"
           data-filter="*"
         >
           All Products
-        </button>
+        </button></a>
 
-        <button
+        <a href="/categorySearch?category=Shirts" > <button
           class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
           data-filter=".women"
         >
-          Women
-        </button>
+         Shirt
+        </button></a>
 
-        <button
+        <a href="/categorySearch?category=Watches" > <button
           class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
-          data-filter=".men"
+          data-filter=".women"
         >
-          Men
-        </button>
+         watches
+        </button></a>
 
-        <button
+        <a href="/categorySearch?category=pants" > <button
           class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
-          data-filter=".bag"
+          data-filter=".women"
         >
-          Bag
-        </button>
+         Pants
+        </button></a>
 
-        <button
+        <!-- <button
           class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
           data-filter=".shoes"
         >
           Shoes
-        </button>
+        </button> -->
 
-        <button
+        <!-- <button
           class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
           data-filter=".watches"
         >
           Watches
-        </button>
+        </button> -->
       </div>
 
       <div class="flex-w flex-c-m m-tb-10">
@@ -61,15 +61,25 @@
           Filter
         </div>
 
-        <div
-          class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search"
-        >
-          <i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
-          <i
-            class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"
-          ></i>
-          Search
+
+        <!-- sample for search -->
+
+        <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
+          <form action="/search-product" method="post" style="border: 1px solid #ccc; width:130px;  padding: 5px; border-radius: 5px;" class="site-block-top-search">
+            <span class="icon icon-search2"></span>
+            <input type="text" style="width: 100%;" class="form-control border-0" name="product" placeholder="Search">
+          </form>
         </div>
+        
+
+        <!-- <div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
+          <form action="">
+          <i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
+          <i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+          Search
+        </form>
+        </div> -->
+
       </div>
 
       <!-- Search product -->
@@ -134,7 +144,7 @@
             </ul>
           </div>
 
-          <div class="filter-col2 p-r-15 p-b-27">
+          <!-- <div class="filter-col2 p-r-15 p-b-27">
             <div class="mtext-102 cl2 p-b-15">Price</div>
 
             <ul>
@@ -177,6 +187,15 @@
                 </a>
               </li>
             </ul>
+          </div> -->
+
+          <div class="filter-links">
+            <a href="/priceFilter" class="filter-link" data-min="0" data-max="500"> ₹.0 - ₹.500 </a>
+            <a href="/priceFilter" class="filter-link" data-min="50" data-max="100"> ₹.500 - ₹.1000 </a>
+            <a href="/priceFilter" class="filter-link" data-min="50" data-max="100"> rs.1000 - rs.1500 </a>
+            <a href="/priceFilter" class="filter-link" data-min="50" data-max="100"> ₹.1500 - ₹.2000 </a>
+            <a href="/priceFilter" class="filter-link" data-min="50" data-max="100"> ₹.2000 - ₹.3000 </a>
+            <!-- Add more filter links as needed -->
           </div>
 
           <div class="filter-col3 p-r-15 p-b-27">
@@ -224,7 +243,6 @@
                 <span class="fs-15 lh-12 m-r-6" style="color: #fa4251">
                   <i class="zmdi zmdi-circle"></i>
                 </span>
-
                 <a href="#" class="filter-link stext-106 trans-04"> Red </a>
               </li>
 
@@ -284,84 +302,95 @@
 
     <div class="row isotope-grid">
       <% products.forEach(element =>{ %>
-
-      <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-        <!-- Block2 -->
-        <div class="block2">
-          <div class="block2-pic hov-img0">
-            <img
-              src="data:<%= element.images[0].contentType %>;base64,<%= element.images[0].data.toString('base64')%>"
-              alt="IMG-PRODUCT"
-              style="width: 270px; height: 334.34px"
-            />
-
-            <!-- <a onclick="callModal('<%=element._id%>')" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
+        <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+          <!-- Block2 -->
+          <div class="block2">
+            <div class="block2-pic hov-img0 position-relative">
+              <!-- Add the offer box here -->
+             <% if(element.offer){ %>
+              <div class="offer-box position-absolute top-0 start-0 bg-primary text-white p-2">
+                <span>Special Offer : <%=element.offer%></span>
+              </div>
+            <% } %>
+              <!-- Product image -->
+              <img
+                src="data:<%= element.images[0].contentType %>;base64,<%= element.images[0].data.toString('base64')%>"
+                alt="IMG-PRODUCT"
+                style="width: 270px; height: 334.34px"
+              />
+    
+              <!-- <a onclick="callModal('<%=element._id%>')" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
                                     Quick View
                                 </a> -->
-          </div>
-
-          <div class="block2-txt flex-w flex-t p-t-14">
-            <div class="block2-txt-child1 flex-col-l">
-              <a
-                href="/product/Details/<%= element._id%>"
-                class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6"
-              >
-                <h6><%= element.product_name %></h6>
-              </a>
-
-              <!-- <a onclick="addCart('<%= element._id %>')"
-										class=" btn btn-success btn-lg "  style="border-radius:16px ;">Add To Cart</a> -->
-              <button
-                type="submit"
-                class="add-cart btn btn-primary"
-                onclick="addCart('<%= element._id %>')"
-              >
-                + Add To Cart
-              </button>
-
-              <div class="rating">
-                <i class="fa fa-star-o"></i>
-                <i class="fa fa-star-o"></i>
-                <i class="fa fa-star-o"></i>
-                <i class="fa fa-star-o"></i>
-                <i class="fa fa-star-o"></i>
-              </div>
-
-              <span class="stext-105 cl3"> <%= element.price%> </span>
             </div>
-
-            <div class="block2-txt-child2 flex-r p-t-3">
-              <a
-                href="#"
-                class="btn-addwish-b2 dis-block pos-relative js-addwish-b2"
-              >
-                <img
-                  class="icon-heart1 dis-block trans-04"
-                  src="images/icons/icon-heart-01.png"
-                  alt="ICON"
-                />
-                <img
-                  class="icon-heart2 dis-block trans-04 ab-t-l"
-                  src="images/icons/icon-heart-02.png"
-                  alt="ICON"
-                />
-              </a>
+    
+            <div class="block2-txt flex-w flex-t p-t-14">
+              <div class="block2-txt-child1 flex-col-l">
+                <a
+                  href="/product/Details/<%= element._id%>"
+                  class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6"
+                >
+                  <h6><%= element.product_name %></h6>
+                </a>
+    
+                <button
+                  type="submit"
+                  class="add-cart btn btn-primary"
+                  onclick="addCart('<%= element._id %>')"
+                >
+                  + Add To Cart
+                </button>
+    
+                <div class="rating">
+                  <i class="fa fa-star-o"></i>
+                  <i class="fa fa-star-o"></i>
+                  <i class="fa fa-star-o"></i>
+                  <i class="fa fa-star-o"></i>
+                  <i class="fa fa-star-o"></i>
+                </div>
+    
+                <span class="stext-105 cl3"> <%= element.price%> </span>
+              </div>
+    
+              <div class="block2-txt-child2 flex-r p-t-3">
+                <a
+                  href="#"
+                  class="btn-addwish-b2 dis-block pos-relative js-addwish-b2"
+                >
+                  <img
+                    class="icon-heart1 dis-block trans-04"
+                    src="images/icons/icon-heart-01.png"
+                    alt="ICON"
+                  />
+                  <img
+                    class="icon-heart2 dis-block trans-04 ab-t-l"
+                    src="images/icons/icon-heart-02.png"
+                    alt="ICON"
+                  />
+                </a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
       <% }) %>
     </div>
+    
 
     <!-- Load more -->
-    <div class="flex-c-m flex-w w-full p-t-45">
+
+    <div class="pagination">
+      <% if (currentPage < totalPages) { %>
+          <a href="/shop?page=<%= currentPage + 1 %>" class="btn btn-primary">Next Page</a>
+      <% } %>
+  </div>
+    <!-- <div class="flex-c-m flex-w w-full p-t-45">
       <a
         href="#"
         class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04"
       >
         Load More
       </a>
-    </div>
+    </div> -->
   </div>
 </div>
 
@@ -589,6 +618,7 @@
         }
       })
       .then((data) => {
+        // console.log(req.session.user);
         flashMessage.textContent = "Item added to cart!";
         flashMessage.style.display = "inline-block";
         alertBox.style.display = "block";
@@ -615,5 +645,50 @@
     document.getElementById("modalshow").innerHTML = ``;
   }
 </script>
+
+
+<!-- <script>
+ document.addEventListener('DOMContentLoaded', function () {
+  console.log("herey");
+  const filterLinks = document.querySelectorAll('.filter-link');
+
+  filterLinks.forEach(link => {
+    link.addEventListener('click', async function (event) {
+      event.preventDefault();
+
+      const minPrice = parseFloat(this.dataset.min) || 0;
+      const maxPrice = parseFloat(this.dataset.max) || Number.MAX_VALUE;
+
+      try {
+        const response = await fetch(`/priceFilter?minPrice=${minPrice}&maxPrice=${maxPrice}`);
+        
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const updatedProducts = await response.json();
+
+        const productContainer = document.getElementById('product-container');
+        productContainer.innerHTML = '';
+
+        updatedProducts.forEach(product => {
+          const productElement = document.createElement('div');
+          productElement.classList.add('product');
+
+          productElement.innerHTML = `
+            <h3>${product.name}</h3>
+            <p>Price: $${product.price}</p>
+          `;
+
+          productContainer.appendChild(productElement);
+        });
+      } catch (error) {
+        console.error(error.message);
+      }
+    });
+  });
+});
+
+</script> -->
 
 <%- include('../partials/user/footer')%>

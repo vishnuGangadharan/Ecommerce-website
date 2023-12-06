@@ -200,6 +200,9 @@
                   </span>
                 </div>
               </div>
+           <%   if(totalProductOffer){ %>
+            special Product offer : <%=totalProductOffer%>
+          <% } %>
               <div class="row mb-5">
                 <div class="col-md-6">
                   <span>Grand Total</span>
@@ -207,8 +210,8 @@
                 <div class="col-md-6 pl-0">
                   <span class="h5 text-black">
                     ₹<span id="grandTotalPrice" class="text-black">
-                      <%= discount === 0 ? grossTotal + 5 : grossTotal -
-                      discount + 5 %>.0
+                      <%= discount === 0 ? grossTotal + 5 - totalProductOffer : grossTotal -
+                      discount + 5 - totalProductOffer %>.0
                     </span>
                   </span>
                 </div>
@@ -225,9 +228,13 @@
                   </a>
                   <% }else { %>
                   <div>
-                    <input type="hidden" name="addressId" />
+                    <input type="hidden" name="discount" value="<%= discount %>">
+            <input type="hidden" name="currentCoupon" value="<%= currentCoupon %>">
+            <input type="hidden" name="totalAmount" value="<%= user.grandTotal - discount - totalProductOffer %>">
+
+                    <!-- <input type="hidden" name="addressId" />
                     <input type="hidden" name="discount" />
-                    <input type="hidden" name="currentCoupon" />
+                    <input type="hidden" name="currentCoupon" /> -->
                     <button
                       type="button"
                       class="btn btn-primary btn-lg py-3 btn-block"
@@ -249,7 +256,7 @@
         </div>
       </div>
     </form>
-    <!-- <div class="row col-lg-12">
+    <div class="row col-lg-12">
         <form action="/apply-coupon" method="post" id="checkout-form">
           <div style="margin-left: 50px;">
             <div>
@@ -263,13 +270,13 @@
               </div>
             </div>
             <p class="text-danger">
-        
+              <%= couponError %>
             </p>
             <a href="/coupons" class="btn btn-outline-primary btn-sm mt-4 mb-5">View Available
               Coupons</a>
           </div>
         </form>
-      </div> -->
+      </div>
   </div>
 </div>
 

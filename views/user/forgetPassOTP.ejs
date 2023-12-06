@@ -47,6 +47,45 @@
             background-color: #0056b3;
         }
     </style>
+
+    <!-- Custom JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Set the initial time in seconds (5 minutes)
+            let timer = 60;
+
+            // Retrieve the timer value from localStorage if available
+            const storedTimer = localStorage.getItem('otpTimer');
+            if (storedTimer) {
+                timer = parseInt(storedTimer);
+            }
+
+            // Function to update the timer
+            function updateTimer() {
+                const minutes = Math.floor(timer / 60);
+                const seconds = timer % 60;
+                document.getElementById('timer').innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            }
+
+            // Function to decrement the timer every second
+            function decrementTimer() {
+                if (timer > 0) {
+                    timer--;
+                    localStorage.setItem('otpTimer', timer);
+                    updateTimer();
+                } else {
+                    clearInterval(interval);
+                    alert('OTP has expired. Please request a new one.');
+                }
+            }
+
+            // Initial update
+            updateTimer();
+
+            // Start the timer interval
+            const interval = setInterval(decrementTimer, 1000);
+        });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -56,7 +95,7 @@
                     <h3 class="text-center">Forget Password OTP Verification</h3>
 
                     <div class="form-group">
-                        <label for="otp">Enter OTP</label>
+                        <label for="otp">Enter OTP (Time Left: <span id="timer"></span>)</label>
                         <input type="text" class="form-control" placeholder="Enter OTP" id="otp" name="otp">
                         <input type="hidden" name="userId" value="<%= userId %>">
                     </div>
@@ -73,7 +112,7 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
+    <!-- Bootstrap JS --> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

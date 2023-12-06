@@ -10,6 +10,7 @@ const Razorpay = require('razorpay')
 const dotenv = require('dotenv');
 const product = require("../../Models/productModel");
 dotenv.config();
+const Coupon = require("../../Models/couponModel")
 
 // const product = require("../../Models/productModel");
 
@@ -40,6 +41,7 @@ const loadCart = async (req, res) => {
 
 const addCart = async (req, res) => {
   try {
+    
     const id = req.params.id;
     const userId = req.session.user;
     const quantity = 1;
@@ -166,6 +168,10 @@ const loadCheckOut = async (req, res) => {
       return total + element.quantity * element.product.price;
     }, 0);
 
+    const totalProductOffer = cartProducts.reduce((total,element) => {
+      return total + element.quantity * element.product.offer;
+    },0)
+console.log("totalProductOffer",totalProductOffer);
     let grossTotal = 0;
     cartProducts.forEach((item) => {
       grossTotal += item.totalAmount;
@@ -179,9 +185,13 @@ const loadCheckOut = async (req, res) => {
       cartProducts,
       grossTotal,
       currentAddress: defaultAddress,
+      errorMessage:"",
+      couponError:"",
+      currentCoupon:"",
+      totalProductOffer
     });
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
   }
 };
 
@@ -215,16 +225,21 @@ const changeAddress = async (req, res) => {
 };
 
 const loadOrder = async (req, res) => {
-  
   try {
     const perPage = 10;
     const page = req.query.page || 1; // Get the current page from query parameters (default to page 1)
-
     const session = req.session.user;
     const currentUser = await User.findById(req.session.user);
 
+    let matchQuery = { user: new mongoose.Types.ObjectId(req.session.user) };
+
+    // Check if status is present in the query parameters
+    if (req.query.status) {
+      matchQuery.status = req.query.status;
+    }
+
     const order = await Order.aggregate([
-      { $match: { user: new mongoose.Types.ObjectId(req.session.user) } },
+      { $match: matchQuery },
       { $unwind: "$products" },
       {
         $lookup: {
@@ -235,14 +250,12 @@ const loadOrder = async (req, res) => {
         },
       },
       { $sort: { orderDate: -1 } },
-    ]).skip((page -1)* perPage).limit(perPage)
+    ]).skip((page - 1) * perPage).limit(perPage);
 
-    const totalUserOrders = await Order.countDocuments({ user:req.session.user });
-    const totalPages = Math.ceil(totalUserOrders/perPage)
+    const totalUserOrders = await Order.countDocuments(matchQuery);
+    const totalPages = Math.ceil(totalUserOrders / perPage);
 
-
-    // console.log(order);
-    res.render("user/order", { session, currentUser, order,totalPages });
+    res.render("user/order", { session, currentUser, order, totalPages });
   } catch (error) {
     console.log(error.message);
   }
@@ -250,9 +263,18 @@ const loadOrder = async (req, res) => {
 
 
 
+
 const placeOrder = async (req, res) => {
   try {
+   
     const currentUser = await User.findOne({ _id: req.session.user });
+    
+    let usedCoupon = ""; // Default value
+    if (req.body.currentCoupon) {
+      usedCoupon = currentUser.earnedCoupons.find((coupon)=>coupon.coupon.equals(req.body.currentCoupon));
+    }
+    console.log("placeoreder",usedCoupon);
+
     await currentUser.populate("cart.product");
     if(!currentUser.cart.length){
       res.redirect('/cart')
@@ -276,14 +298,14 @@ const placeOrder = async (req, res) => {
     let newOrder = new Order({
       user: req.session.user,
       products: orderedProduct,
-      totalAmount: grandTotal - req.body.discount + 5,
+      totalAmount: req.body.totalAmount,
       paymentMethod: req.body.method,
       deliveryAddress,
     });
 // console.log('nefffffffffffffffffffffffffffffffffffffffff',newOrder.totalAmount);
     if (req.body.method === "cod") {
       await newOrder.save();
-     
+     console.log("dddddddddd",newOrder.totalAmount);
     } else if(req.body.method== "wlt"){
       // console.log(newOrder.totalAmount ,"fffffff", currentUser.wallet.balance);
       if(  newOrder.totalAmount > currentUser.wallet.balance){
@@ -296,6 +318,7 @@ const placeOrder = async (req, res) => {
         description: 'Order placed.',
         type: 'Debit',
     };
+    console.log("dddddddddd",newOrder.totalAmount);
     currentUser.wallet.transactions.push(transactionData);
     
       }
@@ -308,7 +331,7 @@ const placeOrder = async (req, res) => {
       })
       // console.log(typeof process.env.key_id);
       const razorpayOrder = await razorpay.orders.create({
-        amount:newOrder.totalAmount*100,   // Total amount in paise
+        amount:(newOrder.totalAmount + 5) * 100,   // Total amount in paise
         currency: 'INR',// Currency code (change as needed)
         receipt: `${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}${Date.now()}`, // Provide a unique receipt ID
       })
@@ -317,17 +340,17 @@ const placeOrder = async (req, res) => {
       newOrder.razorpayOrderId = razorpayOrder.id;
       console.log('razorpayOrder',razorpayOrder);
 
+
+
       return res.render('user/razorepay',{
         order:razorpayOrder,
         key_id:process.env.key_id,
-        user:newOrder
+        user:newOrder,
+        usedCoupon
       })
     }
+   
 
-
-
-    
-    console.log(currentUser.cart);
   
     currentUser.cart.forEach(async (item) => {
       const foundProduct = await Product.findById(item.product._id);
@@ -336,7 +359,19 @@ const placeOrder = async (req, res) => {
       await foundProduct.save();
     });
     currentUser.cart = [];
-    currentUser.grandTotal = 0
+    currentUser.grandTotal = 0;
+
+    console.log("here");
+const currentUsedCoupon =  currentUser.earnedCoupons.find((coupon)=>coupon.coupon.equals(req.body.currentCoupon));
+console.log('currentUsedCoupongggggggggg',currentUsedCoupon);
+if(currentUsedCoupon){
+  currentUsedCoupon.isUsed = true;
+  await Coupon.findByIdAndUpdate(req.body.currentCoupon, {$inc: { usedCount:1}})
+}else{
+  console.log("not fount");
+}
+
+console.log("2nd");
     await currentUser.save();
     res.redirect("/cart/order");
   } catch (error) {
@@ -358,8 +393,10 @@ const cancelOrder = async (req, res) => {
 
     if(foundOrder.paymentMethod !== "cod" && !foundProduct.isCancelled){
       const currentUser = await User.findById(req.session.user);
+      
       if(currentUser){
-        const refundamount = foundOrder.totalAmount;
+        console.log( foundProduct.total);
+        const refundamount =  foundProduct.total;
         currentUser.wallet.balance +=refundamount;
         const transactionData = {
           amount:refundamount,
@@ -374,6 +411,8 @@ const cancelOrder = async (req, res) => {
       }
     }
 
+    console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+console.log("foundproduct",foundProduct);
      foundProduct.isCancelled = true;
 
       foundOrder.totalAmount -=
@@ -409,7 +448,7 @@ const cancelOrder = async (req, res) => {
     await foundOrder.save();
     res.redirect("/cart/order");
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
     // Handle the error appropriately, e.g., send an error response to the client
     res.status(500).send("Internal Server Error");
   }
@@ -475,7 +514,9 @@ const requestReturnProduct = async (req, res, next) => {
 const getWallet = async(req,res) =>{
   try{
     const session = req.session.user
-    const currentUser = await User.findById(req.session.user).sort({ 'wallet.transactions.timestamp': -1 })
+    const currentUser = await User.findById(req.session.user)
+    currentUser.wallet.transactions.sort((a, b) => b.timestamp - a.timestamp);
+
     console.log("fffffffffffffffffff",currentUser);
     res.render("user/wallet",{session,currentUser})
   }catch(error){
@@ -486,15 +527,16 @@ const getWallet = async(req,res) =>{
 
 const saveRazorepay = async(req,res) =>{
   try{
-    const { transactionId, orderId } = req.body;
-    console.log(req.body);
+
+    const { transactionId, orderId, usedCoupon } = req.body;
+    console.log("hhhhhhhhhhhhhhhhhhhhhh",req.body);
     const amount = parseInt(req.body.amount / 100);
     const currentUser = await User.findById(req.session.user).populate('cart.product');
     const deliveryAddress = await Address.findOne({userId:req.session.user, default:true})
     console.log(transactionId,"  ",orderId);
     if(transactionId && orderId ){
         
-console.log('fffffffffff',currentUser.cart);
+// console.log('fffffffffff',currentUser.cart);
       const orderedProducts = currentUser.cart.map((item)=>{
         return {
           product : item.product,
@@ -502,7 +544,7 @@ console.log('fffffffffff',currentUser.cart);
           total:item.totalAmount
         }
       })
-      console.log("111111",orderedProducts);
+      // console.log("111111",orderedProducts);
       let newOrder = new Order ({
         user:req.session.user,
         products:orderedProducts,
@@ -511,7 +553,7 @@ console.log('fffffffffff',currentUser.cart);
         deliveryAddress
       })
       await newOrder.save()
-      console.log("cccccccccc",newOrder);
+      // console.log("cccccccccc",newOrder);
 
       //stock updating
       for(let i=0;i< currentUser.cart.length;i++){
@@ -522,6 +564,17 @@ console.log('fffffffffff',currentUser.cart);
 
       currentUser.cart = [];
       currentUser.grandTotal = 0
+      
+      console.log("here");
+      const currentUsedCoupon =  currentUser.earnedCoupons.find((coupon)=>coupon.coupon.equals(usedCoupon));
+      console.log('currentUsedCoupongggggggggg',currentUsedCoupon);
+      if(currentUsedCoupon){
+        currentUsedCoupon.isUsed = true;
+        await Coupon.findByIdAndUpdate(usedCoupon, {$inc: { usedCount:1}})
+      }else{
+        console.log("not fount");
+      }
+
       await currentUser.save()
       return res.status(200).json({
         message:'order placed successfully'
@@ -531,6 +584,8 @@ console.log('fffffffffff',currentUser.cart);
     console.log(error);
   }
 }
+
+
 
 
 

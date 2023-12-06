@@ -19,7 +19,7 @@
               <div class="auth-form-light text-left py-5 px-4 px-sm-5">
                 <div>
                   <img
-                    src="/public/images/product-09.jpg"
+                    src=""
                     class="mr-2"
                     alt="logo"
                     height="50"
@@ -48,16 +48,24 @@
                   <div class="mt-3">
                     <button
                       type="submit"
+                      id="Verify"
                       class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
                     >
                       Verify
                     </button>
                   </div>
-                  <% if (typeof message !="undefined") {%>
-
-                  <p class="mt-3 text-info"><%= message %></p>
-
-                  <%} %>
+                  <div id="resendOTP" style="display: none;">
+                   <a href="/resendOTPSignup?userId=<%= id %>"> <button
+                      type="button"
+                      class="btn btn-block btn-secondary btn-lg font-weight-medium auth-form-btn"
+                      onclick="resendOTP()"
+                    >
+                      Resend OTP
+                    </button></a>
+                  </div>
+                  <% if (typeof message != "undefined") { %>
+                    <p class="mt-3 text-info"><%= message %></p>
+                  <% } %>
                 </form>
                 <div id="timer"></div>
               </div>
@@ -67,41 +75,56 @@
       </div>
     </div>
     <script>
-      // Set the countdown time to 5 minutes (300 seconds)
-      
-      let countdownTime = Number("300");
+      // Set the countdown time to 2 minutes (120 seconds)
+      let countdownTime = Number(localStorage.getItem("remainingTime")) || 120;
       let timerElement = document.getElementById("timer");
-      
+      let resendButton = document.getElementById("resendOTP");
+      let verifyButton = document.getElementById("Verify");
+
       function startTimer() {
-          let minutes, seconds;
-          let countdown = setInterval(function() {
-              minutes = parseInt(countdownTime / 60, 10);
-              seconds = parseInt(countdownTime % 60, 10);
-      
-              minutes = minutes < 10 ? "0" + minutes : minutes;
-              seconds = seconds < 10 ? "0" + seconds : seconds;
-      
-              timerElement.innerHTML = minutes + ":" + seconds;
-      
-              countdownTime--;
-      
-              if (countdownTime < 0) {
-                  clearInterval(countdown);
-                  timerElement.innerHTML = "New Otp ! Pls click resendOTP";
-  
-                              
-                  document.getElementById("resendOTP").innerHTML = ` <a href="/resendOTP/" class="btn btn-primary custom-btn">Resend OTP</a> `
-     
-                  
-                    document.getElementById("Verify").remove();
-                    document.getElementById("info").remove();
-            }
-          }, 1000); // Update the timer every 1 second (1000 milliseconds)
+        let minutes, seconds;
+        let countdown = setInterval(function () {
+          minutes = parseInt(countdownTime / 60, 10);
+          seconds = parseInt(countdownTime % 60, 10);
+
+          minutes = minutes < 10 ? "0" + minutes : minutes;
+          seconds = seconds < 10 ? "0" + seconds : seconds;
+
+          timerElement.innerHTML = minutes + ":" + seconds;
+
+          countdownTime--;
+
+          // Store the remaining time in local storage
+          localStorage.setItem("remainingTime", countdownTime);
+
+          if (countdownTime < 0) {
+            clearInterval(countdown);
+            timerElement.innerHTML = "New Otp! Please click Resend OTP";
+
+            // Show the Resend OTP button and hide Verify button
+            resendButton.style.display = "block";
+            verifyButton.style.display = "none";
+
+            document.getElementById("info").remove();
+          }
+        }, 1000); // Update the timer every 1 second (1000 milliseconds)
       }
-      
+
       // Call the startTimer function when the page is loaded
       window.onload = startTimer;
-      </script>
-  
+
+      // Resend OTP button click event
+      function resendOTP() {
+        // Hide the Resend OTP button and show Verify button
+        resendButton.style.display = "none";
+        verifyButton.style.display = "block";
+
+        // Reset the countdown time to 2 minutes
+        countdownTime = 120;
+
+        // Start the timer again
+        startTimer();
+      }
+    </script>
   </body>
 </html>

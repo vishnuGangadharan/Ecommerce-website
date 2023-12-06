@@ -12,7 +12,9 @@ async function generateSalt() {
 generateSalt();
 
 
-const sendToMail = (req,res, userId) =>{
+const sendToMail = (req,res, userId,email) =>{
+    console.log("mailoption");
+    console.log(email);
     const transporter = nodeMailer.createTransport({
         service:'Gmail',
         host: 'smtp.gmail.com',
@@ -42,11 +44,11 @@ const sendToMail = (req,res, userId) =>{
             name:"ex-fam",
             address: process.env.USER,
         },
-        to:req.body.email,
+        to:req.body.email || email,
         subject: 'OTP Verification',
         html: `<p> Your otp for varification is ${OTP} </p>`,
     }
-
+console.log(OTP);
     const sendMail = async (transporter,options) =>{
         try{
             const hashedOTP = await bcrypt.hash(OTP, salt)
@@ -64,6 +66,7 @@ const sendToMail = (req,res, userId) =>{
                 error:'',
                 id:userId
             })
+            console.log(email);
         }catch(error){
             res.status(500).json({
                 status:"FAILED",

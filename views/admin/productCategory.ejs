@@ -16,6 +16,7 @@
                 <th>Image</th>
                 <th>Category Name</th>
                 <th>Discription</th>
+                <th>offer Amount</th>
                 <th>Status</th>
                 <th>Action</th>
                 <th>Edit</th>
@@ -33,7 +34,12 @@
                   </td>
   
                   <td><%= category.categoryName%></td>
-                  <td><%= category.description%></td>
+                  <td><%= category.description.substring(0, 30) + '...'%></td>
+                <%  if(category.offer){ %>
+                    <td><%=category.offer%></td>
+                <%  }else{ %>
+                    <td>0</td>
+              <%  } %>
                   
                   <%  if(category.is_desable==true){ %>
                   <td>

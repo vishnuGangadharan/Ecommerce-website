@@ -7,6 +7,7 @@ const Order = require('../../Models/orderModel');
 const Return = require("../../Models/returnProductModel");
 const { editproduct } = require("./productControl");
 // const Wallet = require('../../Models/walletmodel')
+const Coupon = require('../../Models/couponModel')
 
 
 const loadOrder = async (req, res) => {
@@ -50,6 +51,25 @@ const updateActionOrder = async (req, res) => {
         try{
             const order = await Order.findById(req.query.orderId)
             const userData = await User.findById(order.user)
+
+
+            if(req.query.action === "Delivered"){
+                const findCoupon = await Coupon.findOne({
+                    isActive:true, minimumPurchaseAmount:{$lte:order.totalAmount}
+                }).sort({minimumPurchaseAmount: -1});
+
+                if(findCoupon){
+                    //to check contain any  coupon id on user data 
+                    //some is used for true or false
+                    const couponExists  = userData.earnedCoupons.some((coupon) => coupon.coupon.equals(findCoupon._id))
+                    if(!couponExists){
+                        //if not foud it will push the id to earnedcoupon
+                        userData.earnedCoupons.push({coupon:findCoupon._id})
+                    }
+                    await userData.save();
+                }
+            }
+
 
             await Order.updateOne({_id: req.query.orderId},{status: req.query.action})
             res.redirect("/admin/order")

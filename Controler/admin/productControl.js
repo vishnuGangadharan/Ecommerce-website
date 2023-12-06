@@ -3,6 +3,7 @@ const User = require("../../Models/userModel");
 const bcrypt = require("bcrypt");
 const productCategory = require("../../Models/categoryModel");
 const product = require("../../Models/productModel");
+// const { default: products } = require("razorpay/dist/types/products");
 
 const loadaddproduct = async (req, res) => {
   try {
@@ -13,6 +14,11 @@ const loadaddproduct = async (req, res) => {
     console.log(error.message);
   }
 };
+
+
+
+
+
 
 const addproduct = async (req, res) => {
   try {
@@ -25,6 +31,7 @@ const addproduct = async (req, res) => {
       description,
       stockCount,
       category,
+      offer,
       inStock,
     } = req.body);
     if (
@@ -32,7 +39,8 @@ const addproduct = async (req, res) => {
       !brandName ||
       !price ||
       !description ||
-      !stockCount
+      !stockCount ||
+      !offer
     ) {
         // console.log("dkjf");
         // console.log(Categories);
@@ -60,6 +68,7 @@ const addproduct = async (req, res) => {
       description: description,
       category: category,
       in_stock: stock,
+      offer:offer
     });
     // console.log(req.files);
     req.files.forEach((file) => {
@@ -84,6 +93,8 @@ const addproduct = async (req, res) => {
 const loadProductList = async (req, res) => {
   try {
     const products = await product.find();
+
+    
     // console.log(products);
     if (products) {
       res.render("admin/products", { products });
@@ -118,6 +129,7 @@ const loadedit = async (req, res) => {
       description,
       stockCount,
       category,
+      offer,
       id,
     } = req.body;
 
@@ -130,6 +142,7 @@ const loadedit = async (req, res) => {
         stock_count: stockCount,
         description: description,
         category: category,
+        offer:offer
       };
 
       const updatedproduct = await product.findByIdAndUpdate(
@@ -184,18 +197,35 @@ const productDesable = async(req,res) =>{
 }
 
 
-const loadShop = async (req,res) =>{
-    try{
-        const session = req.session.user;
-        const products = await product.find({is_delete:false,in_stock:true,stock_count:{$gte:1},price:{$gte:1}})
-        console.log(products);
-        const category = await productCategory.find()
-        console.log("hiii"+products);
-        res.render('user/shop',{session,products,category})
-    }catch(error){
-        console.log(error.message);
-    }
-}
+const loadShop = async (req, res) => {
+  try {
+      const session = req.session.user;
+      const perPage = 4; // Number of products per page
+      const page = parseInt(req.query.page) || 1; // Get the current page from query parameters (default to page 1)
+
+      // Calculate the number of documents to skip based on the current page
+      const skip = (page - 1) * perPage;
+
+      // Fetch products with pagination
+      const products = await product
+          .find({ is_delete: false, in_stock: true, stock_count: { $gte: 1 }, price: { $gte: 1 } })
+          .skip(skip)
+          .limit(perPage);
+
+      // Count total number of products to calculate total pages
+      const totalProducts = await product.countDocuments({ is_delete: false, in_stock: true, stock_count: { $gte: 1 }, price: { $gte: 1 } });
+      const totalPages = Math.ceil(totalProducts / perPage);
+
+      // Fetch product categories
+      const category = await productCategory.find();
+
+      // Pass pagination information to the view
+      res.render('user/shop', { session, products, category, currentPage: page, totalPages });
+  } catch (error) {
+      console.log(error.message);
+  }
+};
+
 
 
 const productDetails = async(req,res) => {
@@ -206,7 +236,8 @@ const productDetails = async(req,res) => {
         if(details){
             res.render('User/productDetails',{details,session,id})
         }
-        console.log("gdfg"+details);
+        console.log("gdfg",details.category);
+console.log("dsdsddddddddd");
 
     }catch(error){
         console.log(error.message);
@@ -238,6 +269,83 @@ const deleteImgDelete = async (req, res) => {
 }
 
 
+const searchProducts = async(req,res) =>{
+ try{
+  const session = req.session.user;
+  // console.log(session);
+  const foundProducts =  await  product.find({
+    is_delete:false,
+    $or: [
+      { product_name: { $regex: req.body.product, $options: "i"}},
+      {description: {$regex:`\\b${req.body.product}\\b`, $options: 'i'}},
+      {category:{$regex:req.body.product, $options: "i"}},
+    ]
+  })
+// console.log(foundProducts);
+  const findCategories = await productCategory.find({is_desable:false})
+// console.log(findCategories);
+  res.render('user/Shop',{
+    session,
+    products: foundProducts,
+    category: findCategories,
+    currentPage:"",
+    totalPages:""
+  })
+
+ }catch(error){
+  console.log(error);
+ }
+
+}
+
+
+const filterByCategory = async(req,res)=>{
+    try {
+        const session = req.session.user;
+  
+        let filterQuery = { is_delete: false, in_stock: true, stock_count: { $gte: 1 }, price: { $gte: 1 } };
+  
+       // Check if a category is selected
+       if (req.query.category) {
+        filterQuery.category = req.query.category;
+    }
+        // Fetch products with pagination
+        const products = await product
+            .find(filterQuery)
+            
+  console.log("jjjjjjjjjjjjjjjjjjjjjjjjj",products);
+        // // Count total number of products to calculate total pages
+        // const totalProducts = await product.countDocuments({ is_delete: false, in_stock: true, stock_count: { $gte: 1 }, price: { $gte: 1 } });
+        // const totalPages = Math.ceil(totalProducts / perPage);
+  
+        // Fetch product categories
+        const category = await productCategory.find();
+  
+        // Pass pagination information to the view
+        res.render('user/shop', { session, products, category, currentPage:"", totalPages:"" });
+    } catch (error) {
+        console.log(error.message);
+    }
+  };
+  
+
+  const priceFilter = async (req, res) => {
+    const { minPrice, maxPrice } = req.query;
+  
+    try {
+      const filteredProducts = await product.find({
+        price: { $gte: parseFloat(minPrice), $lte: parseFloat(maxPrice) },
+      });
+  
+      res.json(filteredProducts);
+    } catch (error) {
+      console.error(error);  // Log the error details
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+  
+  
+  
 
 module.exports = {
   addproduct,
@@ -249,5 +357,8 @@ module.exports = {
   productDesable,
   loadShop,
   productDetails,
-  deleteImgDelete
+  deleteImgDelete,
+  searchProducts,
+  filterByCategory,
+  priceFilter
 };

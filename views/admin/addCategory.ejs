@@ -1,54 +1,80 @@
 <%- include("../partials/admin/header") %>
 <%- include("../partials/admin/side") %>
-      
 
 <div class="col-12 grid-margin stretch-card">
-    <div class="card">
-      <div class="card-body">
-        <h4 class="card-title">Add Category</h4>
-        <!-- <p class="card-description">
-          Basic form elements
-        </p> -->
-        <form class="forms-sample" action="/admin/category/addCategory" method="post" enctype="multipart/form-data" style="width: 80%; ">
-  
-          <label for="image">Image Upload:</label>
-          <input type="file" id="image" name="image" class="form-control file-upload-info" required>
-          
-  
-          <div class="form-group">
-            <label class="mt-3" for="exampleInputName1">Category Name</label>
-            <input type="text" name="categoryName" class="form-control" id="exampleInputName1" placeholder="Name" required>
-          </div>
-          
-  
-          <!-- <div class="form-group">
-            <label>File upload</label>
-            <input type="file" name="img[]" class="file-upload-default">
-            <div class="input-group col-xs-12">
-              <input type="text" class="form-control file-upload-info" disabled placeholder="Upload Image">
-              <span class="input-group-append">
-                <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
-              </span>
-            </div>
-          </div> -->
-          
-          
-  
-          <div class="form-group mt-2">
-            <label class="" for="exampleTextarea1">Discription</label>
-            <textarea name="description" class="form-control" id="exampleTextarea1" rows="4" required></textarea>
-            <% if (message !== "") { %>
-              <p class="text-danger"><%= message %></p>
-            <% } %>
-  
-          </div>
-          <button type="submit" class="btn btn-primary mr-2">Submit</button>
-          <div>
-           
-          </div>
-        </form>
-      </div>
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">Add Category</h4>
+      <form class="forms-sample" action="/admin/category/addCategory" method="post" enctype="multipart/form-data" style="width: 80%;" id="category-form">
+
+        <label for="image">Image Upload:</label>
+        <input type="file" id="image" name="image" class="form-control file-upload-info" >
+
+        <div class="form-group">
+          <label class="mt-3" for="exampleInputName1">Category Name</label>
+          <input type="text" name="categoryName" class="form-control" id="exampleInputName1" placeholder="Name" >
+          <p class="text-danger" id="name-error-display"></p>
+        </div>
+
+        <div class="form-group">
+          <label class="mt-3" for="exampleInputName1">Category Offer</label>
+          <input type="number" name="offer" class="form-control" id="exampleInputOffer" placeholder="offer" >
+          <p class="text-danger" id="offer-error-display"></p>
+        </div>
+
+        <div class="form-group mt-2">
+          <label class="" for="exampleTextarea1">Description</label>
+          <textarea name="description" class="form-control" id="exampleTextarea1" rows="4"></textarea>
+          <% if (message !== "") { %>
+            <p class="text-danger"><%= message %></p>
+          <% } %>
+        </div>
+
+        <button type="submit" class="btn btn-primary mr-2">Submit</button>
+        <div>
+
+        </div>
+      </form>
     </div>
   </div>
+</div>
 
-  <%-include("../partials/admin/footer")%>
+<script>
+  const form = document.getElementById('category-form');
+  const categoryName = document.getElementById('exampleInputName1');
+  const categoryOffer = document.getElementById('exampleInputOffer')
+
+  form.addEventListener('submit', (event) => {
+    let hasErrors = false;
+
+    document.getElementById('name-error-display').innerText = '';
+    document.getElementById('offer-error-display').innerHTML=""
+
+    // Check for special characters in Category Name
+    const specialCharacters = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/;
+    if (specialCharacters.test(categoryName.value)) {
+      hasErrors = true;
+      document.getElementById('name-error-display').innerText = 'Category Name cannot contain special characters';
+    }
+    if(!categoryOffer.value){
+      hasErrors = true;
+      document.getElementById('offer-error-display').innerText = 'Category offer must be filled or 0';
+
+    }
+
+    // Check if any field is empty
+    const formInputs = form.querySelectorAll('input, textarea');
+    formInputs.forEach((input) => {
+      if (!input.value.trim()) {
+        hasErrors = true;
+        document.getElementById('name-error-display').innerText = 'Please fill in all fields.';
+      }
+    });
+
+    if (hasErrors) {
+      event.preventDefault();
+    }
+  });
+</script>
+
+<%- include("../partials/admin/footer") %>
