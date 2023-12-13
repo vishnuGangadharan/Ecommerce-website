@@ -64,7 +64,8 @@ console.log(OTP);
                 userId,
                 email:req.body.mail,
                 error:'',
-                id:userId
+                id:userId,
+                refferalCode:req.body.refferalCode
             })
             console.log(email);
         }catch(error){

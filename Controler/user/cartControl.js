@@ -15,6 +15,11 @@ const Coupon = require("../../Models/couponModel")
 // const product = require("../../Models/productModel");
 
 const loadCart = async (req, res) => {
+  let cartnum;
+  if(req.session.user){
+    cartnum = await User.findById(req.session.user)
+    //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+        }
   const session = req.session.user;
   const user = await User.findById(req.session.user).populate("cart.product");
   console.log(user.cart);
@@ -26,12 +31,14 @@ const loadCart = async (req, res) => {
         cart: user.cart,
         grandTotal: user.grandTotal,
         message: "Your Cart is Empty",
+        cartnum
       });
     } else {
       res.render("user/shopingCart", {
         session,
         cart: user.cart,
         grandTotal: user.grandTotal,
+        cartnum
       });
     }
   } catch (error) {
@@ -148,6 +155,11 @@ const incAndDec = async (req, res) => {
 
 const loadCheckOut = async (req, res) => {
   const session = req.session.user;
+  let cartnum;
+  if(req.session.user){
+    cartnum = await User.findById(req.session.user)
+    //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+        }
   try {
     const user = await User.findById(session);
     const defaultAddress = await Address.findOne({
@@ -158,8 +170,9 @@ const loadCheckOut = async (req, res) => {
     // console.log(address);
     // console.log(cartItem);
 
-    await user.populate("cart.product");
-   
+    await user.populate("cart.product")
+    await user .populate({ path: "cart.product", populate: { path: "category" } })
+    
     // await user.populate("cart.product.category")
     // console.log(user);
     const cartProducts = user.cart;
@@ -168,9 +181,39 @@ const loadCheckOut = async (req, res) => {
       return total + element.quantity * element.product.price;
     }, 0);
 
-    const totalProductOffer = cartProducts.reduce((total,element) => {
-      return total + element.quantity * element.product.offer;
-    },0)
+  
+  
+  const totalProductOffer = cartProducts.reduce((total, element) => {
+    let productOffer = element.product.offer || 0;
+    let categoryOffer = element.product.category && element.product.category.offer || 0;
+
+    // Check if both product and category have offers
+    // if (productOffer > 0 && categoryOffer > 0) {
+        // Apply the larger of the two offers
+    //     maxOfferPercentage = Math.max(productOffer, categoryOffer);
+    // } else {
+        // Apply the available offer (it could be either product or category)
+        maxOfferPercentage = Math.max(productOffer, categoryOffer);
+    // }
+
+    // Assuming maxOfferPercentage is the largest of product and category offer percentages
+    if (maxOfferPercentage > 0 ) {
+
+        const discountPercentage = maxOfferPercentage;
+        const discountedPrice = element.product.price * (1 - discountPercentage / 100);
+        total += element.quantity * discountedPrice;
+    }
+
+    console.log("maxOfferPercentage", maxOfferPercentage);
+    console.log("element.quantity", element.quantity);
+
+    return total;
+}, 0);
+
+
+
+
+  console.log('totalProductOffer',totalProductOffer);
 console.log("totalProductOffer",totalProductOffer);
     let grossTotal = 0;
     cartProducts.forEach((item) => {
@@ -188,7 +231,8 @@ console.log("totalProductOffer",totalProductOffer);
       errorMessage:"",
       couponError:"",
       currentCoupon:"",
-      totalProductOffer
+      totalProductOffer,
+      cartnum
     });
   } catch (error) {
     console.log(error);
@@ -196,13 +240,18 @@ console.log("totalProductOffer",totalProductOffer);
 };
 
 const loadchangeAddress = async (req, res) => {
+  let cartnum;
+  if(req.session.user){
+    cartnum = await User.findById(req.session.user)
+    //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+        }
   const session = req.session.user;
   try {
     const address = await Address.find({ userId: session });
     // console.log("dfsdffdddddddd");
     // console.log(address);
 
-    res.render("user/changeAddress", { session, address });
+    res.render("user/changeAddress", { session, address,cartnum });
   } catch (error) {
     console.log(error.message);
   }
@@ -229,6 +278,11 @@ const loadOrder = async (req, res) => {
     const perPage = 10;
     const page = req.query.page || 1; // Get the current page from query parameters (default to page 1)
     const session = req.session.user;
+    let cartnum;
+    if(req.session.user){
+      cartnum = await User.findById(req.session.user)
+      //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+          }
     const currentUser = await User.findById(req.session.user);
 
     let matchQuery = { user: new mongoose.Types.ObjectId(req.session.user) };
@@ -255,7 +309,7 @@ const loadOrder = async (req, res) => {
     const totalUserOrders = await Order.countDocuments(matchQuery);
     const totalPages = Math.ceil(totalUserOrders / perPage);
 
-    res.render("user/order", { session, currentUser, order, totalPages });
+    res.render("user/order", { session, currentUser, order, totalPages,cartnum });
   } catch (error) {
     console.log(error.message);
   }
@@ -267,6 +321,11 @@ const loadOrder = async (req, res) => {
 const placeOrder = async (req, res) => {
   try {
    
+    let cartnum;
+    if(req.session.user){
+      cartnum = await User.findById(req.session.user)
+      //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+          }
     const currentUser = await User.findOne({ _id: req.session.user });
     
     let usedCoupon = ""; // Default value
@@ -279,6 +338,9 @@ const placeOrder = async (req, res) => {
     if(!currentUser.cart.length){
       res.redirect('/cart')
     }
+
+
+    
     // console.log('llllllllllllllllllllllllllllllllllllll',currentUser.grandTotal);
     const deliveryAddress = await Address.findOne({
       userId: req.session.user,
@@ -309,7 +371,7 @@ const placeOrder = async (req, res) => {
     } else if(req.body.method== "wlt"){
       // console.log(newOrder.totalAmount ,"fffffff", currentUser.wallet.balance);
       if(  newOrder.totalAmount > currentUser.wallet.balance){
-        res.render("user/shop",{session:req.session.user, message:'In sufficient balance'})
+        res.render("user/shop",{session:req.session.user,cartnum, message:'In sufficient balance'})
       }else{
       await newOrder.save()
       await User.updateOne({_id:req.session.user},{$inc:{'wallet.balance':-newOrder.totalAmount}})
@@ -385,18 +447,36 @@ const cancelOrder = async (req, res) => {
   try {
     const foundOrder = await Order.findById(req.body.orderId).populate(
       "products.product"
-    );
+    )
+    .populate("products.product.category")
+    await foundOrder.populate({ path: "products.product", populate: { path: "category" } })
+    // console.log("foundOrder",foundOrder.products[0].product.category);
+   
 
+  
     const foundProduct = foundOrder.products.find(
       (order) => order.product._id.toString() === req.body.productId
     );
+    console.log("foundOrder",foundProduct.product.category.offer );
 
     if(foundOrder.paymentMethod !== "cod" && !foundProduct.isCancelled){
       const currentUser = await User.findById(req.session.user);
-      
+     
       if(currentUser){
-        console.log( foundProduct.total);
-        const refundamount =  foundProduct.total;
+        let productOffer = foundProduct.product.offer || 0;
+        let categoryOffer = (foundProduct.product.category && foundProduct.product.category.offer) || 0;
+        
+        if (productOffer > 0 || categoryOffer > 0) {
+          // Calculate refund amount based on the larger offer
+          let largerOffer = Math.max(productOffer, categoryOffer);
+         
+          refundamount = (largerOffer / 100) * foundProduct.product.price * foundProduct.quantity;
+        } else {
+          // If no offer, use the total amount
+          refundamount = foundProduct.total;
+        }
+       
+        console.log("refundamount",refundamount);
         currentUser.wallet.balance +=refundamount;
         const transactionData = {
           amount:refundamount,
@@ -411,8 +491,8 @@ const cancelOrder = async (req, res) => {
       }
     }
 
-    console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-console.log("foundproduct",foundProduct);
+    // console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+// console.log("foundproduct",foundProduct);
      foundProduct.isCancelled = true;
 
       foundOrder.totalAmount -=
@@ -456,6 +536,11 @@ console.log("foundproduct",foundProduct);
 
 const getReturnProductForm = async (req, res) => {
       try{
+        let cartnum;
+        if(req.session.user){
+          cartnum = await User.findById(req.session.user)
+          //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+              }
         const session = req.session.user
         const currentUser = await User.findById(req.session.user) 
         
@@ -467,6 +552,7 @@ const getReturnProductForm = async (req, res) => {
         //  console.log(defaultAddress);
          res.render("user/returnForm",{
             session,
+            cartnum,
             currentUser: currentUser,
             currentAddress:defaultAddress,
             order: req.query.order,
@@ -513,12 +599,17 @@ const requestReturnProduct = async (req, res, next) => {
 
 const getWallet = async(req,res) =>{
   try{
+    let cartnum;
+    if(req.session.user){
+      cartnum = await User.findById(req.session.user)
+      //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+          }
     const session = req.session.user
     const currentUser = await User.findById(req.session.user)
     currentUser.wallet.transactions.sort((a, b) => b.timestamp - a.timestamp);
 
     console.log("fffffffffffffffffff",currentUser);
-    res.render("user/wallet",{session,currentUser})
+    res.render("user/wallet",{session,currentUser,cartnum})
   }catch(error){
     console.log(error.message);
   }

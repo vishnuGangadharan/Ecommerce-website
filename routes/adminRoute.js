@@ -67,5 +67,7 @@ admin_Routes.get('/showCoupon',Auth.adminAuth,couponControl.getCoupons)
 admin_Routes.post('/saveCoupon',Auth.adminAuth,couponControl.saveCoupon)
 admin_Routes.get('/couponStatus/:id',Auth.adminAuth,couponControl.couponAction)
 
+//dbsample
+admin_Routes.get('/sample',authControl.sample)
 
 module.exports = admin_Routes

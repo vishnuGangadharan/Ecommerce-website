@@ -94,7 +94,7 @@
         labels: ["10","","","20","","","30","","","40","","", "50","","", "60","","","70"],
         datasets: [
           {
-            data: [200, 480, 700, 600, 620, 350, 380, 350, 850, "600", "650", "350", "590", "350", "620", "500", "990", "780", "650"],
+            data: [200, 480, 700, 600, 620, 350, 3, 0, 0, "600", "650", "350", "590", "350", "620", "500", "990", "780", "650"],
             borderColor: [
               '#4747A1'
             ],
@@ -184,12 +184,12 @@
         data: {
           labels: ["Jan", "Feb", "Mar", "Apr", "May"],
           datasets: [{
-              label: 'Offline Sales',
-              data: [480, 230, 470, 210, 330],
+              label: 'product',
+              data: [300, 230, 470, 210, 330],
               backgroundColor: '#98BDFF'
             },
             {
-              label: 'Online Sales',
+              label: 'category',
               data: [400, 340, 550, 480, 170],
               backgroundColor: '#4B49AC'
             }
@@ -331,7 +331,7 @@
       var areaData = {
         labels: ["Jan", "Feb", "Mar"],
         datasets: [{
-            data: [100, 50, 50],
+            data: [1, 5, 5],
             backgroundColor: [
                "#4B49AC","#FFC100", "#248AFD",
             ],
@@ -404,7 +404,7 @@
       var areaData = {
         labels: ["Jan", "Feb", "Mar"],
         datasets: [{
-            data: [100, 50, 50],
+            data: [1, 5, 5],
             backgroundColor: [
                "#4B49AC","#FFC100", "#248AFD",
             ],

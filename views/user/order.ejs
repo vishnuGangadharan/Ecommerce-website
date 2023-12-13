@@ -20,21 +20,7 @@
 
 
 
-                    <form action="/cart/order" id="search"  >
-                      <div class="row d-flex">
-                        <div class="col-10">
-                        <!-- Status filter dropdown -->
-                        <select name="status" class="form-select mt-3 mb-3" style="margin-left: 50px;">
-                         <option value="">All Status</option>
-                         <option value="Processing">Processing</option>
-                         <option value="Shipped">Shipped</option>
-                         <option value="Delivered">Delivered</option>
-                         <option value="Cancelled">Cancelled</option>
-                        </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary col-2 mt-3 mb-3" style="margin-left: -60px;">Apply Filters</button>
-                      </div>           
-                  </form>
+                 
       
 
 
@@ -42,6 +28,21 @@
 
                     <div class="site-section">
                       <div class="container">
+                        <form action="/cart/order" id="search"  >
+                          <div class="row d-flex">
+                            <div class="col-10">
+                            <!-- Status filter dropdown -->
+                            <select name="status" class="form-select mt-3 mb-3" >
+                             <option value="">All Status</option>
+                             <option value="Processing">Processing</option>
+                             <option value="Shipped">Shipped</option>
+                             <option value="Delivered">Delivered</option>
+                             <option value="Cancelled">Cancelled</option>
+                            </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary col-2 mt-3 mb-3" style="margin-left: -60px;">Apply Filters</button>
+                          </div>           
+                      </form>
                         <% if (!order.length) { %>
                         No orders found.
                         <% } else { %>

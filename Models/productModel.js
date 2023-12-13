@@ -25,8 +25,8 @@ const productSchema = new mongoose.Schema({
         require:true
     },
     category : {
-        type: String,
-        ref:'productCategory'
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'productCategry'
     },
     in_stock:{
         type:Boolean,

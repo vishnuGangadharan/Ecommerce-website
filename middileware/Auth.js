@@ -4,10 +4,10 @@ const User = require('../Models/userModel')
 
 const userloggedout = (req,res,next) =>{
    try{
-    if(!req.session.user){
-        next()
-    }else{
+    if(req.session.user){
         res.redirect('/')
+    }else{
+        next()
     }
 
    }catch(error){

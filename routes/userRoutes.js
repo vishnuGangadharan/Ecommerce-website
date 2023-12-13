@@ -27,8 +27,9 @@ user_route.get('/shop',productControl.loadShop)
 user_route.post('/search-product',productControl.searchProducts)
 user_route.get('/product/Details/:id',productControl.productDetails)
 user_route.get('/categorySearch',productControl.filterByCategory)
-user_route.get('/priceFilter',productControl.priceFilter)
-
+user_route.post('/priceFilter',productControl.priceFilter)
+user_route.post('/brandFilter/:name',productControl.brandFilters)
+user_route.post('/categoryFilter/:name',productControl.categoryfiltering)
 
 user_route.get('/cart',Auth.checkToBlock,Auth.userAuth,cartControl.loadCart)
 user_route.post('/cart/:id/passdata',Auth.checkToBlock,Auth.userAuth,cartControl.addCart)

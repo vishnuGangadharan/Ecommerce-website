@@ -225,8 +225,12 @@ const loadSalesReport = async(req,res)=>{
     try{
         let startOfMonth;
         let endOfMonth;
+       
         if(req.query.filtered){
-            startOfMonth = new Date(req.body.form);
+            console.log("req.body.form");
+        console.log("req.body.form",req.body.from);
+        console.log("req.body.upto",req.body.upto);
+            startOfMonth = new Date(req.body.from);
             endOfMonth = new Date(req.body.upto);
             endOfMonth.setHours(23, 59, 59, 999);
 
@@ -321,9 +325,8 @@ const loadSalesReport = async(req,res)=>{
                 totalRevenue += (filteredOrders[i].products.quantity*filteredOrders[i].products.productInfo.price)
             }
         }
-        console.log("orderdone",orderDone);
-        console.log("totalRevenue",totalRevenue);
-        console.log(filteredOrders);
+        // console.log("req.body.form");
+       
         res.render('admin/salesReport',{
             salesReport: filteredOrders,
             orderDone,

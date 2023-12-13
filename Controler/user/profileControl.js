@@ -7,6 +7,11 @@ const Address = require('../../Models/userAddressModel')
 const loadProfile = async (req,res) => {
     try{
     const session = req.session.user
+    let cartnum;
+    if(req.session.user){
+      cartnum = await User.findById(req.session.user)
+      //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+          }
     const user = await User.findById(req.session.user)
    
     const address = await Address.find({userId:session})
@@ -16,7 +21,7 @@ const loadProfile = async (req,res) => {
     if(!user){
         res.status(404).send('User not Found');
     }
-        res.render('user/profile',{session, user, address, showAddAddressBTN})
+        res.render('user/profile',{session,cartnum, user, address, showAddAddressBTN})
     }catch(error){
         console.log(error.message);
     }
@@ -25,6 +30,11 @@ const loadProfile = async (req,res) => {
 const updateProfilePhoto = async(req,res) =>{
     const { image } =req.body
     const session = req.session.user
+    let cartnum;
+    if(req.session.user){
+      cartnum = await User.findById(req.session.user)
+      //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+          }
     try{
         const user = await User.findByIdAndUpdate(req.session.user,{
             $set: {
@@ -44,10 +54,15 @@ const updateProfilePhoto = async(req,res) =>{
 }
 
 
-const loadAddAddress = (req,res)=>{
+const loadAddAddress = async(req,res)=>{
     try{
     const session = req.session.user
-    res.render('user/addAddress',{session})
+    let cartnum;
+    if(req.session.user){
+      cartnum = await User.findById(req.session.user)
+      //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+          }
+    res.render('user/addAddress',{session,cartnum})
     }catch(error){
         console.log(error.message);
 }
@@ -56,6 +71,11 @@ const loadAddAddress = (req,res)=>{
 const addAddress = async (req,res) =>{
     const session = req.session.user
     try{
+        let cartnum;
+        if(req.session.user){
+          cartnum = await User.findById(req.session.user)
+          //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+              }
         const {name , email, place, post, mobile, pincode, house, district, state, country} = req.body
         const otherAddress = await Address.find({ userId: req.session.user})
         // console.log('-------------'+exist);
@@ -104,12 +124,17 @@ const deleteAddress = async(req,res) =>{
 
 const loadEditAddress = async(req,res) =>{
     const session = req.session.user;
+    let cartnum;
+    if(req.session.user){
+      cartnum = await User.findById(req.session.user)
+      //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+          }
 
     // console.log('dddddddddddd'+req.query.addressid);
     try{
         const address = await Address.findById(req.query.addressid)
         // console.log("vvvvvvvvvvv"+address);
-        res.render('user/editAddress',{session, address })
+        res.render('user/editAddress',{session,cartnum, address })
 
     }
     catch(error){

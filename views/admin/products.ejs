@@ -46,7 +46,7 @@
                    <% }else { %>
                       <td>0</td>
                    <% } %>
-                    <td><%= product.category%></td>
+                    <td><%= product.category.categoryName%></td>
                     <td><%=product.price%></td>
                     <td><%=product.stock_count%></td>
                    <% if(product.is_delete===true){ %>

@@ -12,21 +12,21 @@
           All Products
         </button></a>
 
-        <a href="/categorySearch?category=Shirts" > <button
+        <a href="/categorySearch?category=653a3af7e42832e518594666" > <button
           class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
           data-filter=".women"
         >
          Shirt
         </button></a>
 
-        <a href="/categorySearch?category=Watches" > <button
+        <a href="/categorySearch?category=653a3b0fe42832e51859466a" > <button
           class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
           data-filter=".women"
         >
          watches
         </button></a>
 
-        <a href="/categorySearch?category=pants" > <button
+        <a href="/categorySearch?category=65695e2ccfc611746474b5a7" > <button
           class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
           data-filter=".women"
         >
@@ -50,7 +50,7 @@
 
       <div class="flex-w flex-c-m m-tb-10">
         <div
-          class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter"
+          class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter" id="dropdowns"
         >
           <i
             class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"
@@ -102,31 +102,31 @@
       <div class="dis-none panel-filter w-full p-t-10">
         <div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
           <div class="filter-col1 p-r-15 p-b-27">
-            <div class="mtext-102 cl2 p-b-15">Sort By</div>
+            <div class="mtext-102 cl2 p-b-15">Sort By categories</div>
 
             <ul>
-              <li class="p-b-6">
+              <!-- <li class="p-b-6">
                 <a href="#" class="filter-link stext-106 trans-04"> Default </a>
-              </li>
+              </li> -->
 
-              <li class="p-b-6">
+              <!-- <li class="p-b-6">
                 <a href="#" class="filter-link stext-106 trans-04">
                   Popularity
                 </a>
-              </li>
+              </li> -->
 
-              <li class="p-b-6">
+              <!-- <li class="p-b-6">
                 <a href="#" class="filter-link stext-106 trans-04">
                   Average rating
                 </a>
-              </li>
-
+              </li> -->
+<!-- 
               <li class="p-b-6">
                 <a
                   href="#"
                   class="filter-link stext-106 trans-04 filter-link-active"
-                >
-                  Newness
+                > -->
+                  <!-- Newness
                 </a>
               </li>
 
@@ -134,13 +134,14 @@
                 <a href="#" class="filter-link stext-106 trans-04">
                   Price: Low to High
                 </a>
-              </li>
-
+              </li> -->
+              <% category.forEach((element)=>{ %>
               <li class="p-b-6">
-                <a href="#" class="filter-link stext-106 trans-04">
-                  Price: High to Low
+                <a onclick="categoryFilter('<%=element._id%>')" class="filter-link stext-106 trans-04">
+                 <%=element.categoryName%>
                 </a>
               </li>
+          <% }) %>
             </ul>
           </div>
 
@@ -189,16 +190,18 @@
             </ul>
           </div> -->
 
-          <div class="filter-links">
-            <a href="/priceFilter" class="filter-link" data-min="0" data-max="500"> ₹.0 - ₹.500 </a>
-            <a href="/priceFilter" class="filter-link" data-min="50" data-max="100"> ₹.500 - ₹.1000 </a>
-            <a href="/priceFilter" class="filter-link" data-min="50" data-max="100"> rs.1000 - rs.1500 </a>
-            <a href="/priceFilter" class="filter-link" data-min="50" data-max="100"> ₹.1500 - ₹.2000 </a>
-            <a href="/priceFilter" class="filter-link" data-min="50" data-max="100"> ₹.2000 - ₹.3000 </a>
-            <!-- Add more filter links as needed -->
-          </div>
+          <div class="filter-links " style="margin-right: 20px;">
+            <h4 class="mtext-102 cl2 p-b-15">filter by price</h4>
+            <a href="#" class="filter-link p-b-6" onclick="priceFilter(0, 500)"> ₹.0 - ₹.500 </a><br>
+            <a href="#" class="filter-link p-b-6" onclick="priceFilter(500, 1000)"> ₹.500 - ₹.1000 </a><br>
+            <a href="#" class="filter-link p-b-6" onclick="priceFilter(1000, 1500)"> ₹.1000 - ₹.1500 </a><br>
+            <a href="#" class="filter-link p-b-6" onclick="priceFilter(1500, 2000)"> ₹.1500 - ₹.2000 </a><br>
+            <a href="#" class="filter-link p-b-6" onclick="priceFilter(2000, 3000)"> ₹.2000 - ₹.3000 </a>
+           
+        </div>
+        
 
-          <div class="filter-col3 p-r-15 p-b-27">
+          <!-- <div class="filter-col3 p-r-15 p-b-27">
             <div class="mtext-102 cl2 p-b-15">Color</div>
 
             <ul>
@@ -254,64 +257,52 @@
                 <a href="#" class="filter-link stext-106 trans-04"> White </a>
               </li>
             </ul>
-          </div>
+          </div> -->
 
           <div class="filter-col4 p-b-27">
-            <div class="mtext-102 cl2 p-b-15">Tags</div>
+            <div class="mtext-102 cl2 p-b-15">Filter on Brands</div>
 
             <div class="flex-w p-t-4 m-r--5">
+             <% brands.forEach((element)=>{ %>
               <a
-                href="#"
-                class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5"
+                
+                class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5 cursor-pointer"
+                onclick="find('<%= element.brand_name%>')"
               >
-                Fashion
+               <%= element.brand_name %>
               </a>
-
-              <a
-                href="#"
-                class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5"
-              >
-                Lifestyle
-              </a>
-
-              <a
-                href="#"
-                class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5"
-              >
-                Denim
-              </a>
-
-              <a
-                href="#"
-                class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5"
-              >
-                Streetstyle
-              </a>
-
-              <a
-                href="#"
-                class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5"
-              >
-                Crafts
-              </a>
+          <%  }) %>
+          
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="row isotope-grid">
+
+    <!-- product shows start from here -->
+
+    <div class="row isotope-grid" id="filter">
+
       <% products.forEach(element =>{ %>
-        <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+        <div class="-sm-6col col-md-4 col-lg-3 p-b-35 isotope-item women">
           <!-- Block2 -->
           <div class="block2">
             <div class="block2-pic hov-img0 position-relative">
               <!-- Add the offer box here -->
-             <% if(element.offer){ %>
-              <div class="offer-box position-absolute top-0 start-0 bg-primary text-white p-2">
-                <span>Special Offer : <%=element.offer%></span>
-              </div>
-            <% } %>
+              
+              <% if ((element.offer && element.offer > 0) || (element.category.offer && element.category.offer > 0)) { %>
+                <div class="offer-box position-absolute top-0 start-0 bg-primary text-white p-2" style="position: absolute; width: 100%;">
+                  <% if (element.offer && element.offer > element.category.offer) { %>
+                    Special Product Offer: <%= element.offer %>% 
+                  <% } else { %>
+                    Special Category Offer: <%= element.category.offer %>%
+                  <% } %>
+                </div>
+              <% } %>
+              
+              
+            
               <!-- Product image -->
               <img
                 src="data:<%= element.images[0].contentType %>;base64,<%= element.images[0].data.toString('base64')%>"
@@ -319,9 +310,7 @@
                 style="width: 270px; height: 334.34px"
               />
     
-              <!-- <a onclick="callModal('<%=element._id%>')" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                                    Quick View
-                                </a> -->
+              
             </div>
     
             <div class="block2-txt flex-w flex-t p-t-14">
@@ -330,7 +319,7 @@
                   href="/product/Details/<%= element._id%>"
                   class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6"
                 >
-                  <h6><%= element.product_name %></h6>
+                  <h6><%= element.product_name.substring(0, 25) + '...' %></h6>
                 </a>
     
                 <button
@@ -379,10 +368,14 @@
     <!-- Load more -->
 
     <div class="pagination">
-      <% if (currentPage < totalPages) { %>
-          <a href="/shop?page=<%= currentPage + 1 %>" class="btn btn-primary">Next Page</a>
+      <% for (let i = 1; i <= totalPages; i++) { %>
+        <a href="/shop?page=<%= i %>" class="btn btn-primary mt-4"><%= i %></a>
       <% } %>
-  </div>
+    </div>
+    
+
+
+
     <!-- <div class="flex-c-m flex-w w-full p-t-45">
       <a
         href="#"
@@ -646,49 +639,329 @@
   }
 </script>
 
+<script>
+function find(name){
+  fetch(`/brandFilter/${name}`,{
+    method:"POST",
+    headers: {//to shear any data as form or any
+          "Content-Type": "application/json"
+        },
+  })
+  .then(response => {
+        // Check if the request was successful
+    if(!response.ok){
+      throw new Error(response.status === 400 ? 'Insufficient stock.': 'Network response was not ok');
+    }
+    // Parse the JSON data from the response
+    return response.json();
+  })
+  .then(data => {
+    document.getElementById("dropdowns").click()
 
-<!-- <script>
- document.addEventListener('DOMContentLoaded', function () {
-  console.log("herey");
-  const filterLinks = document.querySelectorAll('.filter-link');
+    //access as DOM above define an id as filter
+    //creates all tags insde that div
+    const filter = document.getElementById("filter")
+    filter.innerHTML=""
+    console.log(data.products);
+    if(data.products.length){
+      data.products.forEach(product => {
+        const div = document.createElement("div")
+        const imageSrc = URL.createObjectURL(new Blob([new Uint8Array(product.images[0].data.data)],{ type: product.images[0].contentType}));
+        div.classList.add("-sm-6col", "col-md-4", "col-lg-3","p-b-35", "isotope-item" ,"women")
+        div.innerHTML=`
+          <!-- Block2 -->
+          <div class="block2">
+            <div class="block2-pic hov-img0 position-relative">
+              <!-- Add the offer box here -->
+            
+              <div class="offer-box position-absolute top-0 start-0 bg-primary text-white p-2">
+                <span>Special Offer : ${product.offer}</span>
+              </div>
+           
+              <!-- Product image -->
+              <img
+                src="${imageSrc}"
+                alt="IMG-PRODUCT"
+                style="width: 270px; height: 334.34px"
+              />
+    
+              
+            </div>
+    
+            <div class="block2-txt flex-w flex-t p-t-14">
+              <div class="block2-txt-child1 flex-col-l">
+                <a
+                  href="/product/Details/${product._id}"
+                  class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6"
+                >
+                  <h6>${product.product_name.substring(0, 25) + '...' }</h6>
+                </a>
+    
+                <button
+                  type="submit"
+                  class="add-cart btn btn-primary"
+                  onclick="addCart('${product._id}')"
+                >
+                  + Add To Cart
+                </button>
+    
+                <div class="rating">
+                  <i class="fa fa-star-o"></i>
+                  <i class="fa fa-star-o"></i>
+                  <i class="fa fa-star-o"></i>
+                  <i class="fa fa-star-o"></i>
+                  <i class="fa fa-star-o"></i>
+                </div>
+    
+                <span class="stext-105 cl3"> ${product.price} </span>
+              </div>
+    
+              <div class="block2-txt-child2 flex-r p-t-3">
+                <a
+                  href="#"
+                  class="btn-addwish-b2 dis-block pos-relative js-addwish-b2"
+                >
+                  <img
+                    class="icon-heart1 dis-block trans-04"
+                    src="images/icons/icon-heart-01.png"
+                    alt="ICON"
+                  />
+                  <img
+                    class="icon-heart2 dis-block trans-04 ab-t-l"
+                    src="images/icons/icon-heart-02.png"
+                    alt="ICON"
+                  />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        `
+        filter.appendChild(div)
+      });
+    }else{
+      filter.innerHTML = "<h3 >Not found </h3>"
+    }
+  })
+}
 
-  filterLinks.forEach(link => {
-    link.addEventListener('click', async function (event) {
-      event.preventDefault();
+</script>
 
-      const minPrice = parseFloat(this.dataset.min) || 0;
-      const maxPrice = parseFloat(this.dataset.max) || Number.MAX_VALUE;
 
-      try {
-        const response = await fetch(`/priceFilter?minPrice=${minPrice}&maxPrice=${maxPrice}`);
-        
-        if (!response.ok) {
-          throw new Error(`Error: ${response.statusText}`);
-        }
+<script>
+  function categoryFilter(name){
+  fetch(`/categoryFilter/${name}`,{
+    method:"POST",
+    headers: {//to shear any data as form or any
+          "Content-Type": "application/json"
+        },
+  })
+  .then(response => {
+        // Check if the request was successful
+    if(!response.ok){
+      throw new Error(response.status === 400 ? 'Insufficient stock.': 'Network response was not ok');
+    }
+    // Parse the JSON data from the response
+    return response.json();
+  })
+  .then(data => {
+    document.getElementById("dropdowns").click()
 
-        const updatedProducts = await response.json();
+    //access as DOM above define an id as filter
+    //creates all tags insde that div
+    const filter = document.getElementById("filter")
+    filter.innerHTML=""
+   
+    if(data.categorys.length){
+      data.categorys.forEach(product => {
+        const div = document.createElement("div")
+        const imageSrc = URL.createObjectURL(new Blob([new Uint8Array(product.images[0].data.data)],{ type: product.images[0].contentType}));
+        div.classList.add("-sm-6col", "col-md-4", "col-lg-3","p-b-35", "isotope-item" ,"women")
+        div.innerHTML=`
+          <!-- Block2 -->
+          <div class="block2">
+            <div class="block2-pic hov-img0 position-relative">
+              <!-- Add the offer box here -->
+            
+              <div class="offer-box position-absolute top-0 start-0 bg-primary text-white p-2">
+                <span>Special Offer : ${product.offer}</span>
+              </div>
+           
+              <!-- Product image -->
+              <img
+                src="${imageSrc}"
+                alt="IMG-PRODUCT"
+                style="width: 270px; height: 334.34px"
+              />
+    
+              
+            </div>
+    
+            <div class="block2-txt flex-w flex-t p-t-14">
+              <div class="block2-txt-child1 flex-col-l">
+                <a
+                  href="/product/Details/${product._id}"
+                  class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6"
+                >
+                  <h6>${product.product_name.substring(0, 25) + '...' }</h6>
+                </a>
+    
+                <button
+                  type="submit"
+                  class="add-cart btn btn-primary"
+                  onclick="addCart('${product._id}')"
+                >
+                  + Add To Cart
+                </button>
+    
+                <div class="rating">
+                  <i class="fa fa-star-o"></i>
+                  <i class="fa fa-star-o"></i>
+                  <i class="fa fa-star-o"></i>
+                  <i class="fa fa-star-o"></i>
+                  <i class="fa fa-star-o"></i>
+                </div>
+    
+                <span class="stext-105 cl3"> ${product.price} </span>
+              </div>
+    
+              <div class="block2-txt-child2 flex-r p-t-3">
+                <a
+                  href="#"
+                  class="btn-addwish-b2 dis-block pos-relative js-addwish-b2"
+                >
+                  <img
+                    class="icon-heart1 dis-block trans-04"
+                    src="images/icons/icon-heart-01.png"
+                    alt="ICON"
+                  />
+                  <img
+                    class="icon-heart2 dis-block trans-04 ab-t-l"
+                    src="images/icons/icon-heart-02.png"
+                    alt="ICON"
+                  />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        `
+        filter.appendChild(div)
+      });
+    }else{
+      filter.innerHTML = "<h3 >Not found </h3>"
+    }
+  })
+}
+</script>
 
-        const productContainer = document.getElementById('product-container');
-        productContainer.innerHTML = '';
+<script>
+  function priceFilter(min, max) {
+    console.log("1");
+    console.log("Min:", min);
+    console.log("Max:", max);
+        fetch(`/priceFilter?min=${min}&max=${max}`,{
+        method:"POST",
+        headers: {//to shear any data as form or any
+          "Content-Type": "application/json"
+        },
+  })
+  .then(response => {
+        // Check if the request was successful
+    if(!response.ok){
+      throw new Error(response.status === 400 ? 'Insufficient stock.': 'Network response was not ok');
+    }
+    // Parse the JSON data from the response
+    return response.json();
+  })
+  .then(data => {
+    document.getElementById("dropdowns").click()
 
-        updatedProducts.forEach(product => {
-          const productElement = document.createElement('div');
-          productElement.classList.add('product');
-
-          productElement.innerHTML = `
-            <h3>${product.name}</h3>
-            <p>Price: $${product.price}</p>
-          `;
-
-          productContainer.appendChild(productElement);
-        });
-      } catch (error) {
-        console.error(error.message);
-      }
-    });
-  });
-});
-
-</script> -->
-
+    //access as DOM above define an id as filter
+    //creates all tags insde that div
+    const filter = document.getElementById("filter")
+    filter.innerHTML=""
+   
+    if(data.filteredProducts.length){
+      data.filteredProducts.forEach(product => {
+        const div = document.createElement("div")
+        const imageSrc = URL.createObjectURL(new Blob([new Uint8Array(product.images[0].data.data)],{ type: product.images[0].contentType}));
+        div.classList.add("-sm-6col", "col-md-4", "col-lg-3","p-b-35", "isotope-item" ,"women")
+        div.innerHTML=`
+          <!-- Block2 -->
+          <div class="block2">
+            <div class="block2-pic hov-img0 position-relative">
+              <!-- Add the offer box here -->
+            
+              <div class="offer-box position-absolute top-0 start-0 bg-primary text-white p-2">
+                <span>Special Offer : ${product.offer}</span>
+              </div>
+           
+              <!-- Product image -->
+              <img
+                src="${imageSrc}"
+                alt="IMG-PRODUCT"
+                style="width: 270px; height: 334.34px"
+              />
+    
+              
+            </div>
+    
+            <div class="block2-txt flex-w flex-t p-t-14">
+              <div class="block2-txt-child1 flex-col-l">
+                <a
+                  href="/product/Details/${product._id}"
+                  class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6"
+                >
+                  <h6>${product.product_name.substring(0, 25) + '...' }</h6>
+                </a>
+    
+                <button
+                  type="submit"
+                  class="add-cart btn btn-primary"
+                  onclick="addCart('${product._id}')"
+                >
+                  + Add To Cart
+                </button>
+    
+                <div class="rating">
+                  <i class="fa fa-star-o"></i>
+                  <i class="fa fa-star-o"></i>
+                  <i class="fa fa-star-o"></i>
+                  <i class="fa fa-star-o"></i>
+                  <i class="fa fa-star-o"></i>
+                </div>
+    
+                <span class="stext-105 cl3"> ${product.price} </span>
+              </div>
+    
+              <div class="block2-txt-child2 flex-r p-t-3">
+                <a
+                  href="#"
+                  class="btn-addwish-b2 dis-block pos-relative js-addwish-b2"
+                >
+                  <img
+                    class="icon-heart1 dis-block trans-04"
+                    src="images/icons/icon-heart-01.png"
+                    alt="ICON"
+                  />
+                  <img
+                    class="icon-heart2 dis-block trans-04 ab-t-l"
+                    src="images/icons/icon-heart-02.png"
+                    alt="ICON"
+                  />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        `
+        filter.appendChild(div)
+      });
+    }else{
+      filter.innerHTML = "<h3 >Not found </h3>"
+    }
+  })
+}
+</script>
 <%- include('../partials/user/footer')%>

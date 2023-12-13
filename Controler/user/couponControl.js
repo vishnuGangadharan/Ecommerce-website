@@ -7,6 +7,11 @@ const showCoupon = async(req,res) =>{
     try{
 
         const session = req.session.user
+        let cartnum;
+        if(req.session.user){
+          cartnum = await User.findById(req.session.user)
+          //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+              }
         const userCoupon = await User.findById(session).populate('earnedCoupons.coupon')
         const earnedCoupons = userCoupon.earnedCoupons;
         const foundCoupon = await Coupon.find({isActive:true})
@@ -20,6 +25,7 @@ console.log(foundCoupon);
              session,
              foundCoupon:remainingCoupon,
              earnedCoupons, 
+             cartnum
             })
     }catch(error){
         console.log(error);
@@ -31,10 +37,19 @@ const applyCoupon = async(req,res)=>{
     try{
       
         const currentCouponCode = req.body.coupon.trim();
+      
+//In JavaScript, the trim() method is used to remove whitespace (spaces, tabs, and line breaks) from both ends of a string.
+// Whitespace at the beginning and end of a string is commonly added unintentionally and may cause issues 
+//when comparing or working with strings
         const currentCoupon = await Coupon.findOne({code: currentCouponCode});
     //   const currentCoupon = await Coupon.findOne({code:req.body.coupon})
       console.log(currentCoupon);
       const session = req.session.user;
+      let cartnum;
+      if(req.session.user){
+        cartnum = await User.findById(req.session.user)
+        //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+            }
       const user = await User.findById(session).populate('earnedCoupons.coupon')
       await user.populate('cart.product');
       // await userData.populate('cart.product.category');
@@ -47,7 +62,7 @@ const applyCoupon = async(req,res)=>{
       const grandTotal = cartProducts.reduce((total, element) => {
         return total + element.quantity * element.product.price;
       }, 0);
-  
+      
       let grossTotal = 0;
       cartProducts.forEach((item) => {
         grossTotal += item.totalAmount;
@@ -85,6 +100,7 @@ const applyCoupon = async(req,res)=>{
 
       res.render("user/checkOut", {
         session,
+        cartnum,
         user,
         grandTotal,
         cartProducts,

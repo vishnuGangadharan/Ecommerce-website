@@ -33,7 +33,13 @@
                 <select class="form-control form-control-lg " name="category" id="category">
                     <!-- need edits -->
                   <% categories.forEach((category) => { %>
-                    <option value="<%= category.categoryName %>"><%= category.categoryName %></option>
+
+                  <%  if(category._id.toString() === products.category.toString()){ %>
+                    <option selected value="<%= category._id %>"><%= category.categoryName %></option>
+                   <% } else{ %>
+                      <option value="<%= category._id %>"><%= category.categoryName %></option>
+
+                   <% } %>
                    <% }) %>
                 </select>
               </div>
@@ -47,8 +53,8 @@
         </div>
 
         <div class="form-group">
-          <label for="exampleInputPassword4">Offer Price</label>
-          <input type="number" name="offer" class="form-control"  value="<%= products.offer %>"> id="exampleInputOfferPrice" placeholder="offerprice">
+          <label for="exampleInputPassword4">Offer Price Percentage</label>
+          <input type="number" name="offer" class="form-control"  value="<%= products.offer %>" id="exampleInputOfferPrice" placeholder="offerprice">
           <p class="text-danger" id="offerprice-error-display"></p>
         </div>
         <!-- <div class="form-group">
@@ -138,3 +144,32 @@
   </div>
 </footer>
 <%-include("../partials/admin/footer")%>
+
+
+  <script>
+  const form = document.querySelector('.forms-sample'); // Use class instead of id
+  const offerprice = document.getElementById('exampleInputOfferPrice');
+  const price = document.getElementById('exampleInputPassword4'); // Assuming this is the price input field
+
+  form.addEventListener('submit', (event) => {
+    let hasErrors = false;
+
+    document.getElementById('offerprice-error-display').innerHTML = "";
+
+    if (!offerprice.value) {
+      hasErrors = true;
+      document.getElementById('offerprice-error-display').innerHTML = "Please insert the offer value or 0";
+    } else if (offerprice.value > 100) {
+      hasErrors = true;
+      document.getElementById('offerprice-error-display').innerHTML = "Offer value must be below 100%";
+    } else if (offerprice.value < 0) {
+      hasErrors = true;
+      document.getElementById('offerprice-error-display').innerHTML = "Offer value must be above 0 or 0";
+    }
+
+    if (hasErrors) {
+      event.preventDefault();
+    }
+  });
+</script>
+

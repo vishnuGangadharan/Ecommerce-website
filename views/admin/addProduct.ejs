@@ -30,7 +30,7 @@
                 <label for="category">Category</label>
                 <select class="form-control form-control-lg " name="category" id="category">
                   <% Categories.forEach((category) => { %>
-                    <option><%= category.categoryName %></option>
+                    <option value="<%= category._id %>"><%= category.categoryName %></option>
                   <% }) %>
                 </select>
                 <p class="text-danger" id="category-error-display"></p>
@@ -48,7 +48,7 @@
 
 
         <div class="form-group">
-          <label for="exampleInputPassword4">Offer Percentage</label>
+          <label for="exampleInputPassword4">Offer Percentage </label>
           <input type="number" name="offer" class="form-control" id="exampleInputOfferPrice" placeholder="offerprice">
           <p class="text-danger" id="offerprice-error-display"></p>
         </div>
@@ -182,9 +182,9 @@
     }if (!offerprice.value) {
       hasErrors = true;
   document.getElementById('offerprice-error-display').innerHTML = "Please insert offer value or 0";
-} else if (offerprice.value >= price.value / 2) {
+} else if (offerprice.value > 100) {
   hasErrors = true;
-  document.getElementById('offerprice-error-display').innerHTML = "Offer value must be below than 50% of price";
+  document.getElementById('offerprice-error-display').innerHTML = "Offer value must be below than 100% ";
 }else if(offerprice.value < 0){
    hasErrors = true;
   document.getElementById('offerprice-error-display').innerHTML = "Offer value must be above 0 or 0";

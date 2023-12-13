@@ -1,17 +1,18 @@
 <%- include('../partials/user/header')%>
 <style>
-  .product-image-container {
-    max-width: 100px; /* Set your desired max-width */
+  /* .product-image-container {
+    max-width: 100px;
     overflow: hidden;
   }
 
   .product-image {
     width: 100%;
     height: auto;
-  }
+  } */
+  
 </style>
 
-<div class="site-wrap" style="width: 1200px">
+<div class="site-wrap">
   <div class="bg-light py-3">
     <div class="container">
       <div class="row">
@@ -23,7 +24,7 @@
     </div>
   </div>
 
-  <div class="container">
+  <div class="container-fluid" style="width: 97%;">
     <div class="site-section">
       <% if (!cartProducts) { %> Your cart is empty. <% } else { %>
       <div class="row">
@@ -112,7 +113,7 @@
       <% } %>
     </div>
 
-    <form action="/product/cart/checkout" method="post" id="checkout-form">
+    <form action="/product/cart/checkout" method="post" id="checkout-form" style="width: 97%;">
       <div class="row" style="margin-left: 50px">
         <div class="col-md-6 d-flex flex-column justify-content-between">
           <div>
@@ -157,7 +158,7 @@
         </div>
         <div class="col-md-6 pl-5">
           <div class="row justify-content-end">
-            <div class="col-md-7">
+            <div class="col-md-7 border border-4 mt-4 rounded">
               <div class="row">
                 <div class="col-md-12 text-right border-bottom mb-5">
                   <h3 class="text-black h4 text-uppercase mt-3">
@@ -200,8 +201,8 @@
                   </span>
                 </div>
               </div>
-           <%   if(totalProductOffer){ %>
-            special Product offer : <%=totalProductOffer%>
+           <% if(totalProductOffer){ %>
+            special Product offer : <%=(grossTotal - totalProductOffer).toFixed(2)%>
           <% } %>
               <div class="row mb-5">
                 <div class="col-md-6">
@@ -210,8 +211,8 @@
                 <div class="col-md-6 pl-0">
                   <span class="h5 text-black">
                     ₹<span id="grandTotalPrice" class="text-black">
-                      <%= discount === 0 ? grossTotal + 5 - totalProductOffer : grossTotal -
-                      discount + 5 - totalProductOffer %>.0
+                      <%= (discount === 0 ? 5 + totalProductOffer : discount - 5 + totalProductOffer).toFixed(2) %>
+
                     </span>
                   </span>
                 </div>
@@ -230,7 +231,7 @@
                   <div>
                     <input type="hidden" name="discount" value="<%= discount %>">
             <input type="hidden" name="currentCoupon" value="<%= currentCoupon %>">
-            <input type="hidden" name="totalAmount" value="<%= user.grandTotal - discount - totalProductOffer %>">
+            <input type="hidden" name="totalAmount" value="<%=  totalProductOffer- discount  %>">
 
                     <!-- <input type="hidden" name="addressId" />
                     <input type="hidden" name="discount" />
@@ -256,6 +257,7 @@
         </div>
       </div>
     </form>
+   <% if(!totalProductOffer){ %>
     <div class="row col-lg-12">
         <form action="/apply-coupon" method="post" id="checkout-form">
           <div style="margin-left: 50px;">
@@ -279,6 +281,9 @@
       </div>
   </div>
 </div>
+  <% }else { %>
+    <h4 class="text-danger mb-5">You can't add any coupons becouse its already have a special discount</h4>
+ <% } %>
 
 <!-- Place Order Modal -->
 <div

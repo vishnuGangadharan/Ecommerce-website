@@ -31,8 +31,12 @@ const securePassword = async (password) => {
 
 const loadhome = async(req,res) =>{
     const session =req.session.user
+    let cartnum;
+    if(req.session.user){
+      cartnum = await User.findById(req.session.user)
+          }
     try{
-        res.render('user/home',{session})
+        res.render('user/home',{session,cartnum})
     }catch(error){
         console.log(error.message);
     }
@@ -55,49 +59,58 @@ const loadLogin = (req,res) =>{
 }
 
 
-
-const insertUser = async (req,res,next) => {
-    try{
-    const {email,username,phone,password,confirmPassword} = req.body;
-    if(email && username && phone && password && confirmPassword){
-        const foundUser = await User.findOne({$or:[{userName:username},{email:email}]})
-
-        if(foundUser.is_varified===true){
-            res.render('user/userRegister',{message:"user already exist"})
+const insertUser = async (req, res, next) => {
+    try {
+        const { email, username, phone, password, confirmPassword, } = req.body;
+        let refferalCode;
+        if(req.body.refferalCode){
+            refferalCode= req.body.refferalCode
         }else{
-            if(password=== confirmPassword){
-                const hashPassword = await bcrypt.hash(password,salt)
-                const newuser = new User({
-                    userName:username,
-                    email:email,
-                    phone:phone,
-                    password:hashPassword,
-                    is_varified:false
-                })
-
-                await newuser.save()
-                const savedUser = await User.findOne({userName:username})
-                
-                // req.session.user = savedUser._id;
-
-                sendMail(req,res,savedUser._id,false)
-            }else{
-                res.render('user/userRegister',{message:'password and confirm password is not match'})
-            }
+            refferalCode=""
         }
-    }else{
-        res.render('user/userRegister',{message:'All fields are require'})
-    }
 
-}catch(error){
-    next(error)
-}
-}
+        if (email && username && phone && password && confirmPassword) {
+            const foundUser = await User.findOne({ $or: [{ userName: username }, { email: email }] });
+
+            if (foundUser && foundUser.is_varified) {
+                return res.render('user/userRegister', { message: "User already exists" });
+            }
+
+            if (password === confirmPassword) {
+                const hashPassword = await bcrypt.hash(password, salt);
+                const newUser = new User({
+                    userName: username,
+                    email: email,
+                    phone: phone,
+                    password: hashPassword,
+                    is_varified: false
+                });
+
+                await newUser.save();
+                const savedUser = await User.findOne({ userName: username });
+
+                // Consider adding proper error handling/logging for the sendMail function
+                sendMail(req, res, savedUser._id, false);
+            } else {
+                return res.render('user/userRegister', { message: 'Password and confirm password do not match' });
+            }
+        } else {
+            return res.render('user/userRegister', { message: 'All fields are required' });
+        }
+
+    } catch (error) {
+        // Properly handle the error, e.g., log it and send a 500 response
+        console.error(error);
+        next(error);
+    }
+};
+
 
 const otpVarification = async(req,res) =>{
     try{
-        const {OTP,ID} = req.body;
+        const {OTP,ID, refferalCode} = req.body;
         console.log(OTP);
+        console.log("refferalCode",refferalCode);
         if(!OTP){
            return res.render('user/verification',{message:"Cannot send empty message",id:ID})
         }
@@ -120,6 +133,26 @@ const otpVarification = async(req,res) =>{
         await User.updateOne({_id: ID},{$set:{is_varified:true}})
         await userOTP.deleteOne({userId})
         req.session.user = userId._id
+        if(isvalid && refferalCode){
+           const reffedruser = await User.findOneAndUpdate({refferalCode:refferalCode},{$inc:{"wallet.balance":200}})
+            const transaction = {
+                amount:200,
+                description: 'Refferal offer',
+                type :'Credit'
+              };
+              reffedruser.wallet.transactions.push(transaction)
+              await reffedruser.save()
+             const newuser= await User.findByIdAndUpdate(userId._id,{$inc:{"wallet.balance":100}})
+              const transactionData = {
+                  amount:100,
+                  description: 'Welcome offer',
+                  type :'Credit'
+                };
+                newuser.wallet.transactions.push(transactionData)
+                await newuser.save()
+        }else{
+            console.log('user not found');
+        }
         return res.redirect('/userLogin')
     }catch(error){
         console.log(error.message);
@@ -149,6 +182,7 @@ const uservalidation = async(req,res) =>{
                     return res.render('user/userLogin',{message:' Invalid Password'})
                 }else{
                     req.session.user = varifieduser._id
+                    // req.session.cart = varifieduser.cart.length
                     return res.redirect('/')
                 }
             }else{

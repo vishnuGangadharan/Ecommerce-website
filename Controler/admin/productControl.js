@@ -92,7 +92,7 @@ const addproduct = async (req, res) => {
 
 const loadProductList = async (req, res) => {
   try {
-    const products = await product.find();
+    const products = await product.find().populate('category')
 
     
     // console.log(products);
@@ -199,6 +199,11 @@ const productDesable = async(req,res) =>{
 
 const loadShop = async (req, res) => {
   try {
+    let cartnum;
+    if(req.session.user){
+      cartnum = await User.findById(req.session.user)
+      //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+          }
       const session = req.session.user;
       const perPage = 4; // Number of products per page
       const page = parseInt(req.query.page) || 1; // Get the current page from query parameters (default to page 1)
@@ -210,17 +215,20 @@ const loadShop = async (req, res) => {
       const products = await product
           .find({ is_delete: false, in_stock: true, stock_count: { $gte: 1 }, price: { $gte: 1 } })
           .skip(skip)
-          .limit(perPage);
+          .limit(perPage).populate("category")
 
       // Count total number of products to calculate total pages
       const totalProducts = await product.countDocuments({ is_delete: false, in_stock: true, stock_count: { $gte: 1 }, price: { $gte: 1 } });
       const totalPages = Math.ceil(totalProducts / perPage);
+     
+      const brands= await product.find({ is_delete: false, in_stock: true, stock_count: { $gte: 1 }, price: { $gte: 1 } })
+console.log("ssdas",brands);
 
       // Fetch product categories
       const category = await productCategory.find();
-
+      // console.log("category",category);
       // Pass pagination information to the view
-      res.render('user/shop', { session, products, category, currentPage: page, totalPages });
+      res.render('user/shop', { session, cartnum, brands, products, category, currentPage: page, totalPages });
   } catch (error) {
       console.log(error.message);
   }
@@ -231,10 +239,15 @@ const loadShop = async (req, res) => {
 const productDetails = async(req,res) => {
     try{
         const session =req.session.user;
+        let cartnum;
+        if(req.session.user){
+          cartnum = await User.findById(req.session.user)
+          //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+              }
         const { id } = req.params;
-        const details = await product.findById({ _id:id })
+        const details = await product.findById({ _id:id }).populate('category')
         if(details){
-            res.render('User/productDetails',{details,session,id})
+            res.render('User/productDetails',{details,session,id,cartnum})
         }
         console.log("gdfg",details.category);
 console.log("dsdsddddddddd");
@@ -272,15 +285,22 @@ const deleteImgDelete = async (req, res) => {
 const searchProducts = async(req,res) =>{
  try{
   const session = req.session.user;
+  let cartnum;
+  if(req.session.user){
+    cartnum = await User.findById(req.session.user)
+    //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+        }
   // console.log(session);
   const foundProducts =  await  product.find({
     is_delete:false,
     $or: [
       { product_name: { $regex: req.body.product, $options: "i"}},
       {description: {$regex:`\\b${req.body.product}\\b`, $options: 'i'}},
-      {category:{$regex:req.body.product, $options: "i"}},
+      // {category:{$regex:req.body.product, $options: "i"}},
     ]
-  })
+  }).populate('category')
+  const brands= await product.find({ is_delete: false, in_stock: true, stock_count: { $gte: 1 }, price: { $gte: 1 } })
+
 // console.log(foundProducts);
   const findCategories = await productCategory.find({is_desable:false})
 // console.log(findCategories);
@@ -289,7 +309,9 @@ const searchProducts = async(req,res) =>{
     products: foundProducts,
     category: findCategories,
     currentPage:"",
-    totalPages:""
+    totalPages:"",
+    brands,
+    cartnum
   })
 
  }catch(error){
@@ -302,18 +324,23 @@ const searchProducts = async(req,res) =>{
 const filterByCategory = async(req,res)=>{
     try {
         const session = req.session.user;
-  
+        let cartnum;
+        if(req.session.user){
+          cartnum = await User.findById(req.session.user)
+          //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+              }
         let filterQuery = { is_delete: false, in_stock: true, stock_count: { $gte: 1 }, price: { $gte: 1 } };
   
        // Check if a category is selected
+       console.log("fffffff",req.query.category);
        if (req.query.category) {
         filterQuery.category = req.query.category;
     }
         // Fetch products with pagination
         const products = await product
-            .find(filterQuery)
-            
-  console.log("jjjjjjjjjjjjjjjjjjjjjjjjj",products);
+            .find(filterQuery).populate('category')
+            const brands= await product.find({ is_delete: false, in_stock: true, stock_count: { $gte: 1 }, price: { $gte: 1 } })
+            console.log("ssdas",brands);
         // // Count total number of products to calculate total pages
         // const totalProducts = await product.countDocuments({ is_delete: false, in_stock: true, stock_count: { $gte: 1 }, price: { $gte: 1 } });
         // const totalPages = Math.ceil(totalProducts / perPage);
@@ -322,7 +349,7 @@ const filterByCategory = async(req,res)=>{
         const category = await productCategory.find();
   
         // Pass pagination information to the view
-        res.render('user/shop', { session, products, category, currentPage:"", totalPages:"" });
+        res.render('user/shop', { session,brands, products, category, currentPage:"", totalPages:"" ,cartnum});
     } catch (error) {
         console.log(error.message);
     }
@@ -330,22 +357,117 @@ const filterByCategory = async(req,res)=>{
   
 
   const priceFilter = async (req, res) => {
-    const { minPrice, maxPrice } = req.query;
-  
     try {
+      let cartnum;
+      if(req.session.user){
+        cartnum = await User.findById(req.session.user)
+        //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+            }
+      const perPage = 4; // Number of products per page
+      const page = parseInt(req.query.page) || 1; // Get the current page from query parameters (default to page 1)
+   // Calculate the number of documents to skip based on the current page
+   const skip = (page - 1) * perPage;
+  
+      console.log("here");
+    const session = req.session.user
+    const minPrice = req.query.min;
+    const maxPrice = req.query.max;
+  
+    console.log("min",minPrice,"max",maxPrice);
       const filteredProducts = await product.find({
         price: { $gte: parseFloat(minPrice), $lte: parseFloat(maxPrice) },
-      });
-  
-      res.json(filteredProducts);
+      }).skip(skip)
+      .limit(perPage);
+      console.log("filteredProducts",filteredProducts);
+      const totalProducts = await product.countDocuments({ is_delete: false, in_stock: true, stock_count: { $gte: 1 }, price: { $gte: 1 } });
+      const totalPages = Math.ceil(totalProducts / perPage);
+     
+
+      res.json({
+        session,
+        filteredProducts,
+        totalPages,
+        cartnum
+      })
     } catch (error) {
       console.error(error);  // Log the error details
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
+
+
   
+ const brandFilters = async(req,res) => {
+  console.log(req.params.name);
+  const session = req.session.user
+  let cartnum;
+  if(req.session.user){
+    cartnum = await User.findById(req.session.user)
+    //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+        }
+  try{
+    const perPage = 4; // Number of products per page
+    const page = parseInt(req.query.page) || 1; // Get the current page from query parameters (default to page 1)
+ // Calculate the number of documents to skip based on the current page
+ const skip = (page - 1) * perPage;
+
+    let products;
+    if(req.params.name){
+       products = await product.find({brand_name:req.params.name,is_delete:false,in_stock:true}).skip(skip)
+       .limit(perPage);
+       console.log(products);
+    }
+    const totalProducts = await product.countDocuments({ is_delete: false, in_stock: true, stock_count: { $gte: 1 }, price: { $gte: 1 } });
+    const totalPages = Math.ceil(totalProducts / perPage);
+   
+    res.json({
+      session,
+      products,
+      totalPages,
+      cartnum
+    })
+  }catch(error){
+    console.error('error in fetch',error);
+  }
+ }
   
-  
+
+ const categoryfiltering = async(req,res) =>{
+  try{
+    let cartnum;
+    if(req.session.user){
+      cartnum = await User.findById(req.session.user)
+      //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+          }
+    const perPage = 4; // Number of products per page
+    const page = parseInt(req.query.page) || 1; // Get the current page from query parameters (default to page 1)
+ // Calculate the number of documents to skip based on the current page
+ const skip = (page - 1) * perPage;
+
+    console.log(req.params.name);
+    const session = req.session.user
+    let categorys;
+    if(req.params.name){
+     categorys = await product.find({ category: req.params.name ,is_delete:false,in_stock:true}).skip(skip)
+     .limit(perPage);
+     
+     console.log('categorys',categorys);
+    }else{
+      console.log("not fount");
+    }
+    const totalProducts = await product.countDocuments({ is_delete: false, in_stock: true, stock_count: { $gte: 1 }, price: { $gte: 1 } });
+      const totalPages = Math.ceil(totalProducts / perPage);
+     
+    res.json({
+      session,
+      categorys,
+      totalPages,
+      cartnum
+    })
+  }catch(error){
+    console.log(error);
+  }
+ }
 
 module.exports = {
   addproduct,
@@ -360,5 +482,7 @@ module.exports = {
   deleteImgDelete,
   searchProducts,
   filterByCategory,
-  priceFilter
+  priceFilter,
+  brandFilters,
+  categoryfiltering
 };
