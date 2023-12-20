@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+<!-- Font Awesome CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    integrity="sha384-l5qgYDOITPU6S1Ll3zq4UA6H/ksdjU1iBdONIT2y3ePv5Pq2j2eAAKapXITo4W4s"
+    crossorigin="anonymous" />
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        #invoice {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            padding: 20px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+    </style>
+</head>
+
+<script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+    integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+    crossorigin="anonymous"></script>
+
+<body>
+
+    <div class="card" id="invoice">
+        <div class="card-body">
+            <div class="container mb-5 mt-3">
+                <div class="row d-flex align-items-baseline">
+                    <a href="javascript:history.back();" id="abtn" class="btn_3 btn btn-primary mb-4" style="width: 50px;">Go Back</a>
+                    <div class="col-xl-9">
+                        <p style="color: #7e8d9f;font-size: 20px;">Invoice >> <strong>ID: <%=orderDetails._id%></strong></p>
+                    </div>
+                    <div class="col-xl-3 float-end">
+                    </div>
+                    <hr>
+                </div>
+
+                <div class="container col-md-12">
+                    <!-- <div class="text-center">
+                        <i class="fab fa-mdb fa-4x ms-0" style="color:#5d9fc5 ;"></i>
+                       <p class="pt-0">valentire.com</p> -->
+                    <!-- </div>  -->
+
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xl-8">
+                        <ul class="list-unstyled">
+                            <li class="text-muted">To: <span style="color:#5d9fc5 ;">
+                              <%= user.userName ? user.userName : 'arjun' %>
+                              <br>
+                                   email: <%= user.email ? user.email : 'arjun97@gmail.com' %>
+                                   <br>
+                                   phone: <%= user.phone ? user.phone : '1234567899' %>
+
+                                </span></li>
+                            <li class="text-muted">
+                              <%= orderDetails.deliveryAddress.state %>
+                            </li>
+                            <li class="text-muted">
+                                 <%=orderDetails.deliveryAddress.place %>
+                            </li>
+                            <li class="text-muted"><i class="fas fa-phone"></i>
+                              <%=orderDetails.deliveryAddress.postCode %>,
+                              <br>
+                              <%=orderDetails.deliveryAddress.post %> <br>
+                              <%=orderDetails.deliveryAddress.houseName %>
+
+                               
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-xl-4">
+                        <p class="text-muted">Invoice</p>
+                        <ul class="list-unstyled">
+                            <li class="text-muted"><i class="fas fa-circle" style="color:#84B0CA ;"></i> <span
+                                    class="fw-bold">ID : </span>
+                                    <%=orderDetails._id%>
+                            </li>
+                            <li class="text-muted"><i class="fas fa-circle" style="color:#84B0CA ;"></i> <span
+                                    class="fw-bold">Creation Date: <%=orderDetails.orderDate.toDateString()%> </span>
+                            </li>
+                            
+                            <li class="text-muted"><i class="fas fa-circle" style="color:#84B0CA ;"></i> <span
+                                    class="fw-bold">payment method : </span>
+                                    <%=orderDetails.paymentMethod%>
+                            </li>
+                               
+
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="row my-2 mx-1 justify-content-center">
+                    <table class="table table-striped table-borderless">
+                        <thead style="background-color:#84B0CA ;" class="text-white">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Product name</th>
+                                <th scope="col">Qty</th>
+                                <th scope="col">Unit Price</th>
+                                <th>total amount</th>
+                                <th>offer(percentage)</th>
+                                <th scope="col">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                                <tr>
+                                    <th scope="row">
+                                     1
+                                    </th>
+                                    <td>
+                                   <%=productDetails.product_name%>
+                                    </td>
+                                    <td>
+                                        <%=productDetailsLog.quantity%>  
+                                    </td>
+                                    <td>
+                                        <!-- Display original price -->
+                                        <span>&#8377; <%=productDetails.price%></span>
+                                    </td>
+                                    <td>&#8377; 
+                                      <%=productDetailsLog.quantity * productDetails.price %>
+                                    </td>
+                                    <td>&#8377; 
+                                      <!-- discount -->
+                                      <%=offer/100 *productDetails.price * productDetailsLog.quantity%>
+                                    </td>
+                                    <td>
+                                      <%= productDetailsLog.quantity * productDetails.price - (offer / 100 * productDetails.price * productDetailsLog.quantity) %>
+                                    </td>
+                                </tr>
+                               
+                        </tbody>
+
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-xl-8">
+                        <p class="ms-3">Add additional notes and payment information</p>
+
+                    </div>
+                    <div class="col-xl-3">
+                        <ul class="list-unstyled">
+                        </ul>
+                        <li class="text-muted ms-3">
+                            <span class="text-black me-4">price</span>&#8377;      <%= productDetailsLog.quantity * productDetails.price - (offer / 100 * productDetails.price * productDetailsLog.quantity) %>
+
+                        </li>
+                        <li class="text-muted ms-3">
+                            <span class="text-black me-4">Delivery charge</span>&#8377; 5
+                        </li>
+                        <li class="text-muted ms-3"><span class="text-black me-4">SubTotal</span>&#8377; 
+                                order.totalAmount 
+                        </li>
+                        
+                       
+                        <p class="text-black float-start"><span class="text-black me-3"> Total
+                                Amount</span><span style="font-size: 14px;">&#8377;  <%= productDetailsLog.quantity * productDetails.price - (offer / 100 * productDetails.price * productDetailsLog.quantity)+5 %>
+                            </span></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-xl-10">
+                        <p>Thank you for your purchase</p>
+                    </div>
+                    <div class="col-xl-2">
+
+                        <!-- Add a Download Button -->
+                        <button style="background-color:#60bdf3 ;" id="downloadButton"
+                            class="btn btn-primary text-capitalize" onclick="generatePDF()">Download Invoice</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+        crossorigin="anonymous"></script>
+<script>
+    function generatePDF() {
+        const downloadButton = document.getElementById('downloadButton');
+        downloadButton.style.display = 'none';
+        const abtn = document.getElementById('abtn');
+        abtn.style.display = 'none';
+        setTimeout(function () {
+            downloadButton.style.display = 'block';
+            abtn.style.display = 'block';
+        }, 1000);
+        const element = document.getElementById('invoice');
+        html2pdf()
+            .from(element)
+            .save();
+
+
+    }
+</script>
+
+</html>

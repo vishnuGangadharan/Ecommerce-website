@@ -2,8 +2,8 @@ const express = require('express')
 const admin_Routes = express.Router()
 const Auth = require('../middileware/Auth')
 const authControl = require('../Controler/admin/authControl')
-const userData = require('../Controler/admin/userdetails')
-const categoryControl = require('../Controler/admin/category')
+const userData = require('../Controler/admin/userdetailsControl')
+const categoryControl = require('../Controler/admin/categoryControl')
 const productControl = require('../Controler/admin/productControl')
 const orderControl = require('../Controler/admin/orderController')
 const couponControl = require('../Controler/admin/couponControl')
@@ -67,7 +67,6 @@ admin_Routes.get('/showCoupon',Auth.adminAuth,couponControl.getCoupons)
 admin_Routes.post('/saveCoupon',Auth.adminAuth,couponControl.saveCoupon)
 admin_Routes.get('/couponStatus/:id',Auth.adminAuth,couponControl.couponAction)
 
-//dbsample
-admin_Routes.get('/sample',authControl.sample)
+
 
 module.exports = admin_Routes

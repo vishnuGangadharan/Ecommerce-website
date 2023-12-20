@@ -23,7 +23,8 @@ const loadAddCategory = (req, res) => {
       }
       const exist = await productCategory.findOne({
         categoryName: req.body.categoryName,
-      });
+      }).collation({ locale: 'en', strength: 2 });
+      
       if (!exist) {
         const category = new productCategory({
           categoryName: req.body.categoryName,
@@ -114,6 +115,19 @@ const editCategory = async (req, res) => {
     const { description, categoryName,offer } = req.body;
     const id = req.params.id; // Extract the ID from req.params
 console.log(req.body);
+console.log(id);
+const category = await productCategory.findById(id)
+const exist = await productCategory.findOne({
+  categoryName: req.body.categoryName,
+  _id: { $ne: req.params.id }, // Exclude the document with the specified ID
+}).collation({ locale: 'en', strength: 2 });
+
+if(exist ){
+  res.render('admin/editCategory',{category,message:"name already exist"})
+}
+
+
+
     const data = {
       categoryName: categoryName,
       description: description,

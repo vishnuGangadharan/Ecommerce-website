@@ -7,7 +7,14 @@
 
 
 
+<style>
+  .page-link.active {
+    background-color: #007bff; /* Change this to the desired background color for the active page */
+    color: #fff; /* Change this to the desired text color for the active page */
+    /* Add any additional styling as needed */
+}
 
+</style>
 
 
 
@@ -123,14 +130,23 @@
               <!--/ Basic Bootstrap Table -->
 
               <!-- Pagination controls -->
+              
               <div class="pagination" style="margin-top: 15px;">
-
-                  <% for (let i = 1; i <= totalPages; i++) { %>
-                    <a href="?page=<%= i %>" class="page-link"><%= i %></a>
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                   <!-- <% console.log(i+"  ",currentPage) %> -->
+                  <% if (i == currentPage) { %>
+                    <a href="?page=<%= i %>" class="page-link active" id="page<%= i %>"><%= i %></a>
+                  <% } else { %>
+                    <a href="?page=<%= i %>" class="page-link" id="page<%= i %>"><%= i %></a>
                   <% } %>
-
+                <% } %>
               </div>
-
+              
+            
+            
+           
+            
+          
 
 
             </div>

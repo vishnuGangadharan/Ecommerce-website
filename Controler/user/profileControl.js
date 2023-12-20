@@ -181,6 +181,38 @@ const editAddress = async (req, res) => {
     }
 };
 
+
+const loadEditProfile = async(req,res)=>{
+try{
+    const session  = req.session.user
+    let cartnum;
+    if(req.session.user){
+      cartnum = await User.findById(req.session.user)
+          }
+    res.render('user/editprofile',{session,cartnum})
+}catch(error){
+    console.log(error);
+} 
+}
+
+
+const editProfile= async(req,res) =>{
+    try{
+        const session = req.session.user
+        const {username,phone,email} =req.body;
+        const user = await User.findByIdAndUpdate(session,{$set:{
+            userName:username,
+            email:email,
+            phone:phone
+        }})
+        res.redirect('/profile')
+    }catch(error){
+        console.log(error);
+    }
+}
+
+
+
 module.exports = {
     loadProfile,
     updateProfilePhoto,
@@ -188,5 +220,7 @@ module.exports = {
     addAddress,
     deleteAddress,
     loadEditAddress,
-    editAddress
+    editAddress,
+    loadEditProfile,
+    editProfile
 }

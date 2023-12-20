@@ -34,7 +34,7 @@ const loadOrder = async (req, res) => {
 
         const totalOrders = await Order.countDocuments();
         const totalPages = Math.ceil(totalOrders / perPage);
-
+        console.log("sddddddddddd",page);
         res.render("admin/order", {
             activePage: "order",
             orders,
@@ -93,12 +93,14 @@ const getReturnRequests = async (req, res) => {
     ])
     .skip((page - 1) * ITEMS_PER_PAGE) // Calculate the number of items to skip
     .limit(ITEMS_PER_PAGE); // Define the number of items to display per page
-    console.log("hkkkkkkkkkk",returnRequests);
+    // console.log("hkkkkkkkkkk",returnRequests);
     const totalPages = Math.ceil(totalRequests / ITEMS_PER_PAGE);
+   console.log(page);
     res.render('admin/returns',{
         activePage:"order",
         returnRequests,
-        totalPages
+        totalPages,
+        currentPage: page 
     });
 
 }catch(error){

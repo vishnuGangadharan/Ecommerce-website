@@ -78,6 +78,10 @@
                                   <strong>Status: <%= item.status %></strong>
                                   <% } %>
                                 </p>
+                                <div>
+                                  <!-- invoice -->
+                                  <a href="/invoice?_id=<%= item.orderedProducts[0]._id %>&orderId=<%= item._id %>">click here to download invoice</a>
+                                </div>
                               </div>
                             </div>
                           </div>

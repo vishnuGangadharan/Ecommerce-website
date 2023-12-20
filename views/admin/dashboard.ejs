@@ -10,7 +10,7 @@
               <h3 class="font-weight-bold">Welcome</h3>
               <h6 class="font-weight-normal mb-0">All systems are running smoothly! <span class="text-primary"></span></h6>
             </div>
-            <div class="col-12 col-xl-4">
+            <!-- <div class="col-12 col-xl-4">
              <div class="justify-content-end d-flex">
               <div class="dropdown flex-md-grow-1 flex-xl-grow-0">
                 <button class="btn btn-sm btn-light bg-white dropdown-toggle" type="button" id="dropdownMenuDate2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -24,7 +24,7 @@
                 </div>
               </div>
              </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -52,18 +52,18 @@
             <div class="col-md-6 mb-4 stretch-card transparent">
               <div class="card card-tale">
                 <div class="card-body">
-                  <p class="mb-4">Today’s Bookings</p>
-                  <p class="fs-30 mb-2">4006</p>
-                  <p>10.00% (30 days)</p>
+                  <p class="mb-4">Today’s Order</p>
+                  <p class="fs-30 mb-2"><%=todaysOrders%></p>
+                  
                 </div>
               </div>
             </div>
             <div class="col-md-6 mb-4 stretch-card transparent">
               <div class="card card-dark-blue">
                 <div class="card-body">
-                  <p class="mb-4">Total Bookings</p>
-                  <p class="fs-30 mb-2">61344</p>
-                  <p>22.00% (30 days)</p>
+                  <p class="mb-4">This Month Delivered Orders</p>
+                  <p class="fs-30 mb-2"><%=thisMonthsDeliveredOrders%></p>
+                
                 </div>
               </div>
             </div>
@@ -72,18 +72,18 @@
             <div class="col-md-6 mb-4 mb-lg-0 stretch-card transparent">
               <div class="card card-light-blue">
                 <div class="card-body">
-                  <p class="mb-4">Number of Meetings</p>
-                  <p class="fs-30 mb-2">34040</p>
-                  <p>2.00% (30 days)</p>
+                  <p class="mb-4">This Month Total Revenue</p>
+                  <p class="fs-30 mb-2">Rs <%=thisMonthsTotalRevenue%></p>
+                
                 </div>
               </div>
             </div>
             <div class="col-md-6 stretch-card transparent">
               <div class="card card-light-danger">
                 <div class="card-body">
-                  <p class="mb-4">Number of Clients</p>
-                  <p class="fs-30 mb-2">47033</p>
-                  <p>0.22% (30 days)</p>
+                  <p class="mb-4">Number of Users In This Month</p>
+                  <p class="fs-30 mb-2"><%=totalCustomersThisMonth%></p>
+                  
                 </div>
               </div>
             </div>
@@ -91,7 +91,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-md-6 grid-margin stretch-card">
+        <!-- <div class="col-md-6 grid-margin stretch-card">
           <div class="card">
             <div class="card-body">
               <p class="card-title">Order Details</p>
@@ -117,15 +117,14 @@
               <canvas id="order-chart"></canvas>
             </div>
           </div>
-        </div>
+        </div> -->
         <div class="col-md-6 grid-margin stretch-card">
           <div class="card">
             <div class="card-body">
              <div class="d-flex justify-content-between">
-              <p class="card-title">Sales Report</p>
-              <a href="#" class="text-info">View all</a>
+              <p class="card-title">Most selling product and category</p>
              </div>
-              <p class="font-weight-500">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
+              <!-- <p class="font-weight-500">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p> -->
               <div id="sales-legend" class="chartjs-legend mt-4 mb-2"></div>
               <canvas id="sales-chart"></canvas>
             </div>
@@ -148,8 +147,22 @@
                           <p class="mb-2 mb-xl-0">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
                         </div>  
                         </div> -->
+
+                        <!-- graph -->
+
+
                       <div class="col-md-12 col-xl-9">
                         <div class="row">
+                          <div class="col-md-6 grid-margin stretch-card mb-4">
+                            <div class="card">
+                              <div class="card-body">
+                                <h4 class="card-title">Monthly Sales</h4>
+                                <div class="chart-container" style="height: 300px;">
+                                  <canvas id="monthlySalesChart"></canvas>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                           <!-- <div class="col-md-6 border-right">
                             <div class="table-responsive mb-3 mb-md-0 mt-3">
                               <table class="table table-borderless report-table">
@@ -299,14 +312,14 @@
                     </div>
                   </div> -->
                 <!-- </div> -->
-                <a class="carousel-control-prev" href="#detailedReports" role="button" data-slide="prev">
+                <!-- <a class="carousel-control-prev" href="#detailedReports" role="button" data-slide="prev">
                   <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                   <span class="sr-only">Previous</span>
                 </a>
                 <a class="carousel-control-next" href="#detailedReports" role="button" data-slide="next">
                   <span class="carousel-control-next-icon" aria-hidden="true"></span>
                   <span class="sr-only">Next</span>
-                </a>
+                </a> -->
               </div>
             </div>
           </div>
@@ -651,3 +664,218 @@
     </div>
 
     <%- include("../partials/admin/footer") %>
+
+    <script>
+
+const firstProduct = '<%= mostSoldProducts[0]?.totalSold || 0; %>'
+const secproduct = "<%= mostSoldProducts[1]?.totalSold || 0; %>"
+const thirdpro = '<%= mostSoldProducts[2]?.totalSold || 0; %>'
+
+//to find max value for graph
+const maxTotalSold = Math.max(firstProduct, secproduct, thirdpro);
+
+
+
+
+       if ($("#sales-chart").length) {
+      var SalesChartCanvas = $("#sales-chart").get(0).getContext("2d");
+      var SalesChart = new Chart(SalesChartCanvas, {
+        type: 'bar',
+        data: {
+          labels: ["<%= mostSoldProducts[0].productName.substring(0, 10) + '...' %>", "<%= mostSoldProducts[1].productName.substring(0, 10) + '...' %>", "<%= mostSoldProducts[2].productName.substring(0, 10) + '...' %>"],
+          datasets: [{
+              label: 'product',
+              data: [firstProduct, secproduct, thirdpro],
+              backgroundColor: '#98BDFF'
+            },
+            {
+              // label: 'category',
+              // data: [0, 0, 0],
+              // backgroundColor: '#4B49AC'
+            }
+          ]
+        },
+        options: {
+          cornerRadius: 5,
+          responsive: true,
+          maintainAspectRatio: true,
+          layout: {
+            padding: {
+              left: 0,
+              right: 0,
+              top: 20,
+              bottom: 0
+            }
+          },
+          scales: {
+            yAxes: [{
+              display: true,
+              gridLines: {
+                display: true,
+                drawBorder: false,
+                color: "#F2F2F2"
+              },
+              ticks: {
+                display: true,
+                min: 0,
+                max: maxTotalSold*2,
+                callback: function(value, index, values) {
+                  return  value + '$' ;
+                },
+                autoSkip: true,
+                maxTicksLimit: 10,
+                fontColor:"#6C7383"
+              }
+            }],
+            xAxes: [{
+              stacked: false,
+              ticks: {
+                beginAtZero: true,
+                fontColor: "#6C7383"
+              },
+              gridLines: {
+                color: "rgba(0, 0, 0, 0)",
+                display: false
+              },
+              barPercentage: 1
+            }]
+          },
+          legend: {
+            display: false
+          },
+          elements: {
+            point: {
+              radius: 0
+            }
+          }
+        },
+      });
+      document.getElementById('sales-legend').innerHTML = SalesChart.generateLegend();
+    }
+    </script>
+    
+    <script>
+
+const monthlySalesData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], // Add labels for each month
+    datasets: [{
+      label: 'Monthly Sales',
+      data: [
+        '<%= monthlyOrderCountsCurrentYear[0] %>',
+        '<%= monthlyOrderCountsCurrentYear[1] %>',
+        '<%= monthlyOrderCountsCurrentYear[2] %>',
+        '<%= monthlyOrderCountsCurrentYear[3] %>',
+        '<%= monthlyOrderCountsCurrentYear[4] %>',
+        '<%= monthlyOrderCountsCurrentYear[5] %>',
+        '<%= monthlyOrderCountsCurrentYear[6] %>',
+        '<%= monthlyOrderCountsCurrentYear[7] %>',
+        '<%= monthlyOrderCountsCurrentYear[8] %>',
+        '<%= monthlyOrderCountsCurrentYear[9] %>',
+        '<%= monthlyOrderCountsCurrentYear[10] %>',
+        '<%= monthlyOrderCountsCurrentYear[11] %>',
+      ],
+      backgroundColor: 'rgba(75, 192, 192, 0.2)',
+      borderColor: 'rgba(75, 192, 192, 1)',
+      borderWidth: 1,
+    }],
+  };
+
+
+        function renderMonthlySalesChart() {
+    const ctx = document.getElementById('monthlySalesChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: monthlySalesData,
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+  }
+  renderMonthlySalesChart();
+    </script>
+
+    <script>
+
+const codCount = '<%= paymentMethods.cod ?paymentMethods.cod: 0  %>'
+  const wltCount = '<%= paymentMethods.wlt ?paymentMethods.wlt: 0  %>'
+  const rzpCount = '<%= paymentMethods.Razorepay ?paymentMethods.Razorepay: 0  %>'
+
+
+      if ($("#north-america-chart").length) {
+      var areaData = {
+        labels: ["cod", "wlt", "Rzpy"],
+        datasets: [{
+            data: [codCount, wltCount, rzpCount],
+            backgroundColor: [
+               "#4B49AC","#FFC100", "#248AFD",
+            ],
+            borderColor: "rgba(0,0,0,0)"
+          }
+        ]
+      };
+      var areaOptions = {
+        responsive: true,
+        maintainAspectRatio: true,
+        segmentShowStroke: false,
+        cutoutPercentage: 78,
+        elements: {
+          arc: {
+              borderWidth: 4
+          }
+        },      
+        legend: {
+          display: false
+        },
+        tooltips: {
+          enabled: true
+        },
+        legendCallback: function(chart) { 
+          var text = [];
+          text.push('<div class="report-chart">');
+            text.push('<div class="d-flex justify-content-between mx-4 mx-xl-5 mt-3"><div class="d-flex align-items-center"><div class="mr-3" style="width:20px; height:20px; border-radius: 50%; background-color: ' + chart.data.datasets[0].backgroundColor[0] + '"></div><p class="mb-0">Wallet</p></div>');
+            text.push('<p class="mb-0"><%= paymentMethods.wlt ?paymentMethods.wlt: 0  %></p>');
+            text.push('</div>');
+            text.push('<div class="d-flex justify-content-between mx-4 mx-xl-5 mt-3"><div class="d-flex align-items-center"><div class="mr-3" style="width:20px; height:20px; border-radius: 50%; background-color: ' + chart.data.datasets[0].backgroundColor[1] + '"></div><p class="mb-0">Cash On Delivery</p></div>');
+            text.push('<p class="mb-0"><%= paymentMethods.cod ?paymentMethods.cod: 0  %></p>');
+            text.push('</div>');
+            text.push('<div class="d-flex justify-content-between mx-4 mx-xl-5 mt-3"><div class="d-flex align-items-center"><div class="mr-3" style="width:20px; height:20px; border-radius: 50%; background-color: ' + chart.data.datasets[0].backgroundColor[2] + '"></div><p class="mb-0">Rezorepay</p></div>');
+            text.push('<p class="mb-0"><%= paymentMethods.Razorepay ?paymentMethods.Razorepay: 0  %></p>');
+            text.push('</div>');
+          text.push('</div>');
+          return text.join("");
+        },
+      }
+      var northAmericaChartPlugins = {
+        beforeDraw: function(chart) {
+          var width = chart.chart.width,
+              height = chart.chart.height,
+              ctx = chart.chart.ctx;
+      
+          ctx.restore();
+          var fontSize = 3.125;
+          ctx.font = "500 " + fontSize + "em sans-serif";
+          ctx.textBaseline = "middle";
+          ctx.fillStyle = "#13381B";
+      
+          var text = "90",
+              textX = Math.round((width - ctx.measureText(text).width) / 2),
+              textY = height / 2;
+      
+          ctx.fillText(text, textX, textY);
+          ctx.save();
+        }
+      }
+      var northAmericaChartCanvas = $("#north-america-chart").get(0).getContext("2d");
+      var northAmericaChart = new Chart(northAmericaChartCanvas, {
+        type: 'doughnut',
+        data: areaData,
+        options: areaOptions,
+        plugins: northAmericaChartPlugins
+      });
+      document.getElementById('north-america-legend').innerHTML = northAmericaChart.generateLegend();
+    }
+    </script>

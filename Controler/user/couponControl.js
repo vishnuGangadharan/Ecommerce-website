@@ -2,6 +2,10 @@ const express = require("express");
 const Coupon = require('../../Models/couponModel');
 const User = require("../../Models/userModel");
 const Address = require('../../Models/userAddressModel')
+const Product = require('../../Models/productModel');
+const { Types } = require("mongoose");
+const { logout } = require("./registerAndLogin");
+
 
 const showCoupon = async(req,res) =>{
     try{
@@ -117,9 +121,99 @@ const applyCoupon = async(req,res)=>{
   }
   
   
+
+
+
+
+  const filter = async (req, res) => {
+    try {
+        console.log("FormData received on the backend:", req.body);
+        const brand = req.body.brand;
+        const category = req.body.category;
+        const price = req.body.price;
+
+        console.log("brand", brand);
+        console.log("price", price);
+        console.log("category", category);
+
+        // Pagination parameters
+        const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
+        const perPage = 4; // Adjust as needed
+
+        // Build the aggregation pipeline based on the selected filters
+        const aggregationPipeline = [];
+
+// Check if brand is provided and is not 'null'
+if (brand && brand !== 'null') {
+  // Combine conditions using $and
+  aggregationPipeline.push({$match: {$and: [{ brand_name: brand },{ is_delete: false }]}});}
+
+  if (category && category !== 'null') {
+    console.log("category", category);
+
+    // Assuming 'category' is an array of category IDs
+    const categoryObjectId = new Types.ObjectId(category);
+    aggregationPipeline.push({
+        $match: {
+            $and: [
+                { category: categoryObjectId },
+                { is_delete: false }
+                // Add more conditions if needed
+            ]
+        }
+    });
+}
+
+if (price && price !== 'null') {
+  // Assuming 'price' is a numerical field in your model
+  const priceRange = price.split('-').map(Number);
+  aggregationPipeline.push({
+      $match: {
+          $and: [
+              { price: { $gte: priceRange[0], $lte: priceRange[1] } },
+              { is_delete: false }
+              // Add more conditions if needed
+          ]
+      }
+  });
+}
+
+
+        // Count total number of products to calculate total pages
+        const totalProducts = await Product.countDocuments({});
+        const totalPages = Math.ceil(totalProducts / perPage);
+
+        // Pagination stages
+        const skip = (page - 1) * perPage;
+        aggregationPipeline.push({ $skip: skip });
+        aggregationPipeline.push({ $limit: perPage });
+
+        // Execute the aggregation pipeline on your Product model
+        console.log("dd", aggregationPipeline);
+        const products = await Product.aggregate(aggregationPipeline);
+        console.log('Found Products:', products.length);
+
+        // Send the filtered products and pagination information as a response
+        res.json({
+            success: true,
+            products,
+            pagination: {
+                currentPage: page,
+                totalPages: totalPages
+            }
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+};
+
+
+
   
 
 module.exports = {
     showCoupon,
-    applyCoupon
+    applyCoupon,
+    filter
 }

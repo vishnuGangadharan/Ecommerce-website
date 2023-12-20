@@ -49,6 +49,8 @@
             <% } %>
   
           </div>
+          <p class="text-danger" id="common-error-display"></p>
+
           <button type="submit" class="btn btn-primary mr-2">Submit</button>
           <div>
            
@@ -69,27 +71,37 @@
   
     document.getElementById('name-error-display').innerText = '';
     document.getElementById('offer-error-display').innerHTML=""
-
+    document.getElementById('common-error-display').innerHTML = "";
       // Check for special characters in Category Name
       const specialCharacters = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/;
-      if (specialCharacters.test(categoryName.value)) {
-        hasErrors = true;
-        document.getElementById('name-error-display').innerText = 'Category Name cannot contain special characters';
-      }
+    const numbers = /\d/; // This checks for any digit (0-9)
+
+    if (
+      specialCharacters.test(categoryName.value) ||
+      numbers.test(categoryName.value)
+    ) {
+      hasErrors = true;
+      document.getElementById("name-error-display").innerText =
+        "Category Name cannot contain special characters or numbers";
+    }
       if (!categoryOffer.value) {
         hasErrors = true;
         document.getElementById('offer-error-display').innerText = 'Category offer must be filled or 0';
       } else if (categoryOffer.value >= 100) {
         hasErrors = true;
         document.getElementById('offer-error-display').innerText = "Cannot set offer above 100%";
-      }
+      } else if (categoryOffer.value < 0) {
+      hasErrors = true;
+      document.getElementById("offer-error-display").innerText =
+        "cannot set offer less than 0";
+    }
   
       // Check if any field is empty
       const formInputs = form.querySelectorAll('input, textarea');
       formInputs.forEach((input) => {
         if (!input.value.trim()) {
           hasErrors = true;
-          document.getElementById('name-error-display').innerText = 'Please fill in all fields.';
+          document.getElementById('common-error-display').innerText = 'Please fill in all fields.';
         }
       });
   

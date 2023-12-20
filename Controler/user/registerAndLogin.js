@@ -175,6 +175,8 @@ const uservalidation = async(req,res) =>{
                 return res.render('user/userLogin',{message:'User not found'})
             }else if(varifieduser.is_block === true ){
                 return res.render('user/userLogin',{message:'Your Blocked By Admin'})
+            }else if(varifieduser.is_Admin === true){
+                return res.render('user/userLogin',{message:"your admin"})
             }else if(varifieduser.is_varified === true){
                 const hashPassword =varifieduser.password;
                 const match = await bcrypt.compare(password,hashPassword)
@@ -197,7 +199,7 @@ const uservalidation = async(req,res) =>{
 const logout = (req,res)=>{
     try{
         req.session.destroy();
-        res.render('user/userLogin')
+        res.redirect('/')
     }catch(error){
         console.log(error.message);
     }

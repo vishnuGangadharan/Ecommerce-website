@@ -34,7 +34,7 @@ const adminAuth = (req,res,next) =>{
         if(req.session.admin){
             next()
         }else{
-            res.render('admin/adminLogin',{message:""})
+            res.redirect('/admin/login')
         }
     }catch(error){
         console.log(error.message);
@@ -46,7 +46,7 @@ const adminLogout = (req,res,next) =>{
         if(!req.session.admin){
             next()
         }else{
-            res.render('admin/dashboard')
+            res.redirect('/admin/dashboard')
         }
     }catch(error){
         console.log(error.message);
@@ -56,10 +56,13 @@ const adminLogout = (req,res,next) =>{
 
 const checkToBlock=async (req,res,next)=>{
     const currentUser=await User.findById(req.session.user)
-    if(currentUser && currentUser.blocked===true){
-        req.session.user=null
-    }
+    if(currentUser && currentUser.is_block===true){
+         req.session.user=null
+         console.log("check",currentUser.is_block);
+        res.redirect('/')
+    }else{
     next()
+}
 }
 
 module.exports ={
