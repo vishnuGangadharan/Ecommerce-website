@@ -225,6 +225,7 @@ const updateOrderCancel = async (req,res) => {
 
 const loadSalesReport = async(req,res)=>{
     try{
+        
         let startOfMonth;
         let endOfMonth;
        

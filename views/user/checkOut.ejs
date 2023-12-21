@@ -24,10 +24,12 @@
     </div>
   </div>
 
-  <div class="container-fluid" style="width: 97%;">
+
+  <!-- <div class="container-fluid" style="width: 97%;"> -->
+    
     <div class="site-section">
       <% if (!cartProducts) { %> Your cart is empty. <% } else { %>
-      <div class="row">
+      <div class="row"  style="width: 95%;">
         <% cartProducts.forEach((cartItem)=>{ %>
         <div class="col-md-12 p-4 border mb-3 d-flex">
           <% if (cartItem.product.images && cartItem.product.images.length > 0)
@@ -73,7 +75,7 @@
         </div>
       </div>
       <% }) %>
-      <div class="row">
+      <div class="row"  style="width: 95%;">
         <div class="col-md-6 mb-5">
           <div class="d-flex">
             <p class="m-3">
@@ -112,8 +114,9 @@
       </div>
       <% } %>
     </div>
+</div>
 
-    <form action="/product/cart/checkout" method="post" id="checkout-form" style="width: 97%;">
+    <form action="/product/cart/checkout" method="post" id="checkout-form" style="width: 96%;">
       <div class="row" style="margin-left: 50px">
         <div class="col-md-6 d-flex flex-column justify-content-between">
           <div>
@@ -281,6 +284,7 @@
       </div>
   </div>
 </div>
+
   <% }else { %>
     <h4 class="text-danger mb-5">You can't add any coupons becouse its already have a special discount</h4>
  <% } %>

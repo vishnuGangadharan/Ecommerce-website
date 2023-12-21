@@ -1,160 +1,139 @@
 <%- include("../partials/admin/header") %>
 <%- include("../partials/admin/side") %>
 
-        <!-- / Menu -->
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Add your other CSS links here -->
+  <style>
+    .page-link.active {
+      background-color: #007bff;
+      color: #fff;
+    }
+  </style>
+</head>
 
+<body>
 
+  <div class="container-fluid" style="overflow-x: auto;">
 
-
-<style>
-  .page-link.active {
-    background-color: #007bff; /* Change this to the desired background color for the active page */
-    color: #fff; /* Change this to the desired text color for the active page */
-    /* Add any additional styling as needed */
-}
-
-</style>
-
-
-
-
-
-        
-        <!-- Layout container -->
-        <div class="layout-page">
-
-          <!-- Content wrapper -->
-          <div class="content-wrapper">
-            <!-- Content -->
-
-            <div class="container-xxl flex-grow-1 container-p-y" style="overflow-x: auto; width: 100%;">
- 
-              <form action="/admin/order" id="search">
-                <div class="row d-flex">
-                  <div class="col-10">
-                  <!-- Status filter dropdown -->
-                  <select name="status" class="form-select">
-                   <option value="">All Status</option>
-                   <option value="Processing">Processing</option>
-                   <option value="Shipped">Shipped</option>
-                   <option value="Delivered">Delivered</option>
-                   <option value="Cancelled">Cancelled</option>
-                  </select>
-                  </div>
-                  <button type="submit" class="btn btn-primary col-2">Apply Filters</button>
-                </div>           
-            </form>
-
-              <!-- Basic Bootstrap Table -->
-              <div class="card" style="margin-top: 20px;">
-                <a href="/admin/return-requests" style="margin-left: 25px; margin-top: 20px;">View Retuen Request</a>
-                <h5 class="card-header" style="display: inline;">Orders</h5>
-
-                <div class="table-responsive text-nowrap">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th>Customer</th>
-                        <th>Products <br> name & quantity</th>
-                        <th>Address</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                        <th>Payment Option</th>
-                      </tr>
-                    </thead>
-                    <tbody class="table-border-bottom-0">
-                      <%
-                         if (orders.length > 0) {
-                            for (let i = 0; i < orders.length; i++) {
-                              %>
-                               <tr>
-                                 <td><%= orders[i].user?.userName %><br><%= orders[i].user?.email %></td>
-                                 <td>
-                                    <% for ( let j = 0; j < orders[i].products.length; j++ ) { %>
-                                      <%= orders[i].products[j].product.product_name %> : <%= orders[i].products[j].quantity %><br>
-                                    <% } %>
-                                </td>
-                                 <td>
-                                    <%= orders[i].deliveryAddress.place %>,<br>
-                                    <%= orders[i].deliveryAddress.postCode %>,<br>
-                                    <%= orders[i].deliveryAddress.post %>,<br>
-                                    <%= orders[i].deliveryAddress.district %>
-                                    <%= orders[i].deliveryAddress.state %>
-                                 </td>
-                                 <td>₹<%= orders[i].totalAmount %></td>
-                                 <td>
-                                    <% if (orders[i].status === "Cancelled"){ %>
-                                        <h6 class="text-danger">Canceled</h6>
-                                    <% } else if (orders[i].status === "Delivered"){ %>
-                                        <h6 class="text-success">Delivered</h6>
-                                    <% } else { %>
-                                        <div class="btn-group">
-                                            <button type="button"
-                                                class="btn btn-danger dropdown-toggle dropdown-toggle-split"
-                                                data-toggle="dropdown"
-                                                aria-haspopup="true"
-                                                aria-expanded="false">
-                                                <%= orders[i].status %> 
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <a class="dropdown-item"
-                                                    href="/admin/order/action-update?action=Processing&orderId=<%= orders[i]._id %>">Processing</a>
-                                                <a class="dropdown-item"
-                                                    href="/admin/order/action-update?action=Shipped&orderId=<%= orders[i]._id %>">Shipped</a>
-                                                <a class="dropdown-item"
-                                                    href="/admin/order/action-update?action=Delivered&orderId=<%= orders[i]._id %>">Delivered</a>
-                                                <a class="dropdown-item"
-                                                    href="/admin/order-cancel?action=Cancelled&orderId=<%= orders[i]._id %>">Cancel order</a>
-                                            </div>
-                                        </div>
-                                    <%}%>
-                                 </td>
-                                 <td><%= orders[i].paymentMethod %></td>
-                               </tr>
-                              <%          
-                            }
-                         } else {
-                           %>
-                            <tr>
-                              <td colspan="6">Products Not Found</td>
-                            </tr>
-                           <%
-                         }
-                      %>
-                      <!-- Add more rows as needed -->
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <!--/ Basic Bootstrap Table -->
-
-              <!-- Pagination controls -->
-              
-              <div class="pagination" style="margin-top: 15px;">
-                <% for (let i = 1; i <= totalPages; i++) { %>
-                   <!-- <% console.log(i+"  ",currentPage) %> -->
-                  <% if (i == currentPage) { %>
-                    <a href="?page=<%= i %>" class="page-link active" id="page<%= i %>"><%= i %></a>
-                  <% } else { %>
-                    <a href="?page=<%= i %>" class="page-link" id="page<%= i %>"><%= i %></a>
-                  <% } %>
-                <% } %>
-              </div>
-              
-            
-            
-           
-            
-          
-
-
-            </div>
-            <!-- / Content -->
-
-            <div class="content-backdrop fade"></div>
+    <div class="col-lg-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between flex-wrap">
+            <h4 class="card-title">Orders</h4>
+            <a href="/admin/return-requests" class="ml-3 mt-2">View Return Requests</a>
           </div>
-          <!-- Content wrapper -->
+
+          <form action="/admin/order" id="search" class="mt-3">
+            <div class="row">
+              <div class="col-md-8">
+                <select name="status" class="form-control">
+                  <option value="">All Status</option>
+                  <option value="Processing">Processing</option>
+                  <option value="Shipped">Shipped</option>
+                  <option value="Delivered">Delivered</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <button type="submit" class="btn btn-primary btn-block">Apply Filters</button>
+              </div>
+            </div>
+          </form>
+
+          <div class="table-responsive mt-4">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Products Name & Quantity</th>
+                  <th>Address</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Payment Option</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (orders.length > 0) { %>
+                <% for (let i = 0; i < orders.length; i++) { %>
+                <tr>
+                  <td><%= orders[i].user?.userName %><br><%= orders[i].user?.email %></td>
+                  <td>
+                    <% for (let j = 0; j < orders[i].products.length; j++) { %>
+                    <%= orders[i].products[j].product.product_name %> : <%= orders[i].products[j].quantity %><br>
+                    <% } %>
+                  </td>
+                  <td>
+                    <%= orders[i].deliveryAddress.place %>,<br>
+                    <%= orders[i].deliveryAddress.postCode %>,<br>
+                    <%= orders[i].deliveryAddress.post %>,<br>
+                    <%= orders[i].deliveryAddress.district %>
+                    <%= orders[i].deliveryAddress.state %>
+                  </td>
+                  <td>₹<%= orders[i].totalAmount %></td>
+                  <td>
+                    <% if (orders[i].status === "Cancelled") { %>
+                    <h6 class="text-danger">Canceled</h6>
+                    <% } else if (orders[i].status === "Delivered") { %>
+                    <h6 class="text-success">Delivered</h6>
+                    <% } else { %>
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <%= orders[i].status %>
+                      </button>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item"
+                          href="/admin/order/action-update?action=Processing&orderId=<%= orders[i]._id %>">Processing</a>
+                        <a class="dropdown-item"
+                          href="/admin/order/action-update?action=Shipped&orderId=<%= orders[i]._id %>">Shipped</a>
+                        <a class="dropdown-item"
+                          href="/admin/order/action-update?action=Delivered&orderId=<%= orders[i]._id %>">Delivered</a>
+                        <a class="dropdown-item"
+                          href="/admin/order-cancel?action=Cancelled&orderId=<%= orders[i]._id %>">Cancel order</a>
+                      </div>
+                    </div>
+                    <% } %>
+                  </td>
+                  <td><%= orders[i].paymentMethod %></td>
+                </tr>
+                <% } %>
+                <% } else { %>
+                <tr>
+                  <td colspan="6">Products Not Found</td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Pagination controls -->
+    <div class="pagination justify-content-center mt-4">
+      <% for (let i = 1; i <= totalPages; i++) { %>
+      <% if (i == currentPage) { %>
+      <a href="?page=<%= i %>" class="page-link active" id="page<%= i %>"><%= i %></a>
+      <% } else { %>
+      <a href="?page=<%= i %>" class="page-link" id="page<%= i %>"><%= i %></a>
+      <% } %>
+      <% } %>
+    </div>
+
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
+
+      
         <!-- / Layout page -->
-        <%- include("../partials/admin/footer") %>

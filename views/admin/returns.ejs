@@ -2,146 +2,143 @@
 <%- include("../partials/admin/side") %>
       
 
-<style>
-  .page-link.active {
-    background-color: #007bff; /* Change this to the desired background color for the active page */
-    color: #fff; /* Change this to the desired text color for the active page */
-    /* Add any additional styling as needed */
-}
+<!DOCTYPE html>
+<html lang="en">
 
-</style>
- <!-- Layout container -->
- <div class="layout-page">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Add your other CSS links here -->
+  <style>
+    .page-link.active {
+      background-color: #007bff;
+      color: #fff;
+    }
+  </style>
+</head>
 
-    <!-- Content wrapper -->
-    <div class="content-wrapper">
-      <!-- Content -->
+<body>
 
-      <div class="container-xxl flex-grow-1 container-p-y"  style="    margin-left: -50px;">
+  <div class="container-fluid">
 
-          <a href="/admin/order"><button style="margin-top: 20px;" type="button" class="btn btn-primary btn-lg mb-3">Back to order</button></a> 
+    <!-- Layout container -->
+    <div class="layout-page">
+
+      <!-- Content wrapper -->
+      <div class="content-wrapper">
+        <!-- Content -->
+
+        <div class="container-xxl flex-grow-1 container-p-y" style="margin-left: -15px; margin-right: -15px;">
+
+          <a href="/admin/order">
+            <button style="margin-top: 20px;" type="button" class="btn btn-primary mb-3">Back to order</button>
+          </a>
 
           <div class="col-lg-12 grid-margin stretch-card">
-              <div class="card">
-                
-                  <div class="d-flex justify-content-between" style="margin-left: 25px; margin-top: 25px;">
-                    <h4 class="card-title">Return Requests</h4>
-                  </div>
-                  <div class="table-responsive">
-                    <table class="table table-striped">
-                      <thead>
-                        <tr>
-                          <th>
-                            User
-                          </th>
-                          <th>
-                            Details
-                          </th>
-                          <th>
-                            Return To
-                          </th>
-                          <th>
-                            Reason and Condition
-                          </th>
-                          <th>
-                            Actions
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <% if (!returnRequests.length) { %>
-                        <tr>
-                          <td colspan="5">No requests found.</td>
-                        </tr>
-                        <% } else { %>
-                        <% returnRequests.forEach((request)=> { %>
-                        <tr>
-                          <td>
-                           <p><%= request.user.userName %></p> <br>
-                            <p class="text-dark mb-1">
-                              <%= request.user.email %>
-                            </p><br>
-                            <%= request.user.phone %>
-                          </td>
-                          <td>
-                            <div>
-                              <div class=" mb-2">
-                                <span class="h6 text-uppercase">
-                                  <%= request.product?.product_name %>
-                                </span><br>
-                                Total price: ₹<%= request.product.price * request.quantity %> <br>
-                                Quantity: <%= request.quantity %> <br>
-                              </div>
-                              Requested Date: <%= request.createdAt.toLocaleDateString() %>
+            <div class="card">
+
+              <div class="d-flex justify-content-between" style="margin-left: 25px; margin-top: 25px;">
+                <h4 class="card-title">Return Requests</h4>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>User</th>
+                      <th>Details</th>
+                      <th>Return To</th>
+                      <th>Reason and Condition</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if (!returnRequests.length) { %>
+                    <tr>
+                      <td colspan="5">No requests found.</td>
+                    </tr>
+                    <% } else { %>
+                    <% returnRequests.forEach((request)=> { %>
+                    <tr>
+                      <td>
+                        <p><%= request.user.userName %></p> <br>
+                        <p class="text-dark mb-1">
+                          <%= request.user.email %>
+                        </p><br>
+                        <%= request.user.phone %>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="mb-2">
+                            <span class="h6 text-uppercase">
+                              <%= request.product?.product_name %>
+                            </span><br>
+                            Total price: ₹<%= request.product.price * request.quantity %> <br>
+                            Quantity: <%= request.quantity %> <br>
+                          </div>
+                          Requested Date: <%= request.createdAt.toLocaleDateString() %>
+                        </div>
+                      </td>
+                      <td>
+                        <%= request.order?.deliveryAddress.post %>,<br>
+                        <%= request.order?.deliveryAddress.postCode%>,<br>
+                        <%= request.address.district %>,<br>
+                        <%= request.order?.deliveryAddress.state %>,<br>
+                      </td>
+                      <td>
+                        <%= request.reason %>,<br>
+                        <%= request.condition %>
+                      </td>
+                      <td>
+                        <div class="d-flex justify-content-between">
+                          <% if (request.status==="Completed" ) { %>
+                          <p class="text-success font-weight-bolder">Completed</p>
+                          <% } else { %>
+                          <div class="btn-group">
+                            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"
+                              aria-haspopup="true" aria-expanded="false">
+                              <%= request.status %>
+                            </button>
+                            <div class="dropdown-menu">
+                              <form action="/admin/return-requests" method="post">
+                                <input type="hidden" name="action" value="approve">
+                                <input type="hidden" name="request" value="<%= request._id %>">
+                                <input type="hidden" name="order" value="<%= request.order._id %>">
+                                <input type="hidden" name="product" value="<%= request.product._id %>">
+                                <button type="submit" class="dropdown-item text-warning">
+                                  Approve
+                                </button>
+                              </form>
+                              <form action="/admin/return-requests" method="post" class="ml-1" id="action-form">
+                                <input type="hidden" name="action" value="reject">
+                                <input type="hidden" name="request" value="<%= request._id %>">
+                                <input type="hidden" name="order" value="<%= request.order._id %>">
+                                <input type="hidden" name="product" value="<%= request.product._id %>">
+                                <button type="submit" class="dropdown-item text-danger">
+                                  Reject
+                                </button>
+                              </form>
+                              <form action="/admin/return-requests" method="post" class="ml-1" id="action-form">
+                                <input type="hidden" name="action" value="Completed">
+                                <input type="hidden" name="request" value="<%= request._id %>">
+                                <input type="hidden" name="order" value="<%= request.order._id %>">
+                                <input type="hidden" name="product" value="<%= request.product._id %>">
+                                <button type="submit" class="dropdown-item text-success">
+                                  Completed
+                                </button>
+                              </form>
                             </div>
-                          </td>
-                          <td>
-                            <%= request.order?.deliveryAddress.post %>,<br>
-                            <%= request.order?.deliveryAddress.postCode%>,<br>
-                            <%= request.address.district %>,<br>
-                            <%= request.order?.deliveryAddress.state %>,<br>
-                          
-                          </td>
-                          <td>
-                            <%= request.reason %>,<br>
-                            <%= request.condition %>
-                          </td>
-                          <td>
-                            <div class="d-flex justify-content-between">
-                              <% if (request.status==="Completed" ) { %>
-                              <p class="text-success font-weight-bolder">Completed</p>
-                              <% } else { %>
-                              <div class="btn-group">
-                                  <button type="button"
-                                      class="btn btn-danger dropdown-toggle dropdown-toggle-split"
-                                      data-toggle="dropdown"
-                                      aria-haspopup="true"
-                                      aria-expanded="false">
-                                      <%= request.status %> 
-                                  </button>
-                                  <div class="dropdown-menu">
-                                      <form action="/admin/return-requests" method="post">
-                                          <input type="hidden" name="action" value="approve">
-                                          <input type="hidden" name="request" value="<%= request._id %>">
-                                          <input type="hidden" name="order" value="<%= request.order._id %>">
-                                          <input type="hidden" name="product" value="<%= request.product._id %>">
-                                          <button type="submit" class="dropdown-item text-warning">
-                                            Approve
-                                          </button>
-                                      </form>
-                                      <form action="/admin/return-requests" method="post" class="ml-1" id="action-form">
-                                          <input type="hidden" name="action" value="reject">
-                                          <input type="hidden" name="request" value="<%= request._id %>">
-                                          <input type="hidden" name="order" value="<%= request.order._id %>">
-                                          <input type="hidden" name="product" value="<%= request.product._id %>">
-                                          <button type="submit" class="dropdown-item text-danger">
-                                            Reject
-                                          </button>
-                                      </form>
-                                      <form action="/admin/return-requests" method="post" class="ml-1" id="action-form">
-                                          <input type="hidden" name="action" value="Completed">
-                                          <input type="hidden" name="request" value="<%= request._id %>">
-                                          <input type="hidden" name="order" value="<%= request.order._id %>">
-                                          <input type="hidden" name="product" value="<%= request.product._id %>">
-                                          <button type="submit" class="dropdown-item text-success">
-                                            Completed
-                                          </button>
-                                      </form>
-                                  </div>
-                              </div>
-                              <% } %>
-                            </div>
-                          </td>
-                        </tr>
-                        <% }) %>
-                        <% } %>
-                      </tbody>
-                    </table>
-                  </div>
-                  <!-- Pagination controls -->
-                    <!-- Pagination controls -->
-              
-              <div class="pagination" style="margin-top: 15px;">
+                          </div>
+                          <% } %>
+                        </div>
+                      </td>
+                    </tr>
+                    <% }) %>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+              <!-- Pagination controls -->
+              <div class="pagination mt-4">
                 <% for (let i = 1; i <= totalPages; i++) { %>
                   <% if (i == currentPage) { %>
                    <% console.log(i+"  ",currentPage) %>
@@ -151,25 +148,29 @@
                   <% } %>
                 <% } %>
               </div>
-                  
-              </div>
+
+            </div>
           </div>
+        </div>
+        <!-- / Content -->
+
+        <div class="content-backdrop fade"></div>
       </div>
-      <!-- / Content -->
+      <!-- Content wrapper -->
 
-      <div class="content-backdrop fade"></div>
     </div>
-    <!-- Content wrapper -->
+    <!-- Layout page -->
 
   </div>
-  <div class="pagination">
-   
-  </div>
-  <!-- / Layout page -->
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
 
 
 
 
-
-
-<%-include("../partials/admin/footer")%>
