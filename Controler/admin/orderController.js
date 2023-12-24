@@ -1,12 +1,10 @@
 const express = require("express");
 const User = require("../../Models/userModel");
-const bcrypt = require("bcrypt");
-const productCategory = require("../../Models/categoryModel");
+
 const product = require("../../Models/productModel");
 const Order = require('../../Models/orderModel');
 const Return = require("../../Models/returnProductModel");
 const { editproduct } = require("./productControl");
-// const Wallet = require('../../Models/walletmodel')
 const Coupon = require('../../Models/couponModel')
 
 

@@ -201,7 +201,7 @@
               <!-- Add the offer box here -->
               
               <% if ((element.offer && element.offer > 0) || (element.category.offer && element.category.offer > 0)) { %>
-                <div class="offer-box position-absolute top-0 start-0 bg-primary text-white p-2" style="position: absolute; width: 100%;">
+                <div class="offer-box position-absolute top-0 start-0 bg-primary text-white p-2" style="position: absolute; width: 270px;">
                   <% if (element.offer && element.offer > element.category.offer) { %>
                     Special Product Offer: <%= element.offer %>% 
                   <% } else { %>

@@ -28,11 +28,12 @@ app.use("/", customerRoute)
 app.use('/admin',adminRoutes)
 
 mongoose
-    .connect('mongodb://127.0.0.1:27017/Trends')
-    .then(() => console.log("DATABASE CONNECTED"))
+    .connect(process.env.DB)
+    .then(() => console.log('DB Connected')
+    )
     .catch((error) => console.log(error))
 
-    const port = process.env.PORT || 3000;
+    const port = process.env.PORT || process.env.PORT;
 
 
-    app.listen(port,()=>{console.log(`port running on hppt://localhost:${port}`);})
+    app.listen(port,()=>{console.log(`port running on hppt://local:${port}`);})

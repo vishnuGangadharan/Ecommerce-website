@@ -1,4 +1,3 @@
-const express = require('express')
 const User = require('../../Models/userModel')
 const bcrypt = require('bcrypt')
 const sendMail = require('../../utils/sendMail')

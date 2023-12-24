@@ -1,9 +1,7 @@
 const express = require("express");
 const User = require("../../Models/userModel");
-const bcrypt = require("bcrypt");
 const productCategory = require("../../Models/categoryModel");
 const product = require("../../Models/productModel");
-// const { default: products } = require("razorpay/dist/types/products");
 
 const loadaddproduct = async (req, res) => {
   try {

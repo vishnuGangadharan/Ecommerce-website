@@ -1,6 +1,4 @@
-const express = require('express')
-const User = require('../../Models/userModel')
-const bcrypt = require('bcrypt')
+
 const productCategory = require('../../Models/categoryModel')
 
 

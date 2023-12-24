@@ -1,6 +1,5 @@
-const express = require("express");
 const Coupon = require('../../Models/couponModel');
-const User = require("../../Models/userModel");
+
 const loadAddCoupon = (req,res)=>{
     try{
         res.render('admin/createCoupon',{error:""})

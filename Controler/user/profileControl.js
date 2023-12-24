@@ -1,4 +1,3 @@
-const express = require('express')
 const User = require('../../Models/userModel')
 const Address = require('../../Models/userAddressModel')
 
@@ -189,7 +188,7 @@ try{
     if(req.session.user){
       cartnum = await User.findById(req.session.user)
           }
-    res.render('user/editprofile',{session,cartnum})
+    res.render('user/editProfile',{session,cartnum})
 }catch(error){
     console.log(error);
 } 

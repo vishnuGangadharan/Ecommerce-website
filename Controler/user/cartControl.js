@@ -1,8 +1,6 @@
-const express = require("express");
 const User = require("../../Models/userModel");
 const Product = require("../../Models/productModel");
 const Address = require("../../Models/userAddressModel");
-const productCategory = require("../../Models/categoryModel");
 const Order = require("../../Models/orderModel");
 const { default: mongoose } = require("mongoose");
 const Return = require("../../Models/returnProductModel");
