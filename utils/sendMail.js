@@ -19,7 +19,7 @@ const sendToMail = (req,res, userId,email) =>{
         service:'Gmail',
         host: 'smtp.gmail.com',
         port:587,
-        secure:false,
+        secure:true,
         auth:{
             user:process.env.USER,
             pass: process.env.PASS
