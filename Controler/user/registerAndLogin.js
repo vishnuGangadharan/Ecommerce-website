@@ -222,6 +222,10 @@ const transporter = nodeMailer.createTransport({
     auth:{
         user:'aflozz010@gmail.com',
         pass: "rczk fcfb eqpp emmy"
+    },
+    tls: {
+      rejectUnauthorized: false
+
     }
 })
 
