@@ -220,8 +220,8 @@ const transporter = nodeMailer.createTransport({
     port:587,
     secure:false,
     auth:{
-        user:process.env.USER,
-        pass: process.env.PASS
+        user:'cozastore4@gmail.com',
+        pass: 'aszw ordk qzme mrec'
     }
 })
 
@@ -240,7 +240,7 @@ const forgetPassword = async(req,res) =>{
                 const otp = `${Math.floor(1000 + Math.random() * 9000)}`
                 console.log("jjjjjjjjjjjj",otp);
                 const mailOptions ={
-                        from:process.env.USER,
+                        from:'cozastore4@gmail.com',
                         to:findUser.email,
                         subject: "Verify Your Email",
                     html: `<p>Enter <b>${otp}</b> in the website verify your email address to forget password process</p>
