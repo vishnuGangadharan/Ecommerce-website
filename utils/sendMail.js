@@ -21,8 +21,8 @@ const sendToMail = (req,res, userId,email) =>{
         port:587,
         secure:true,
         auth:{
-            user:'aflozz010@gmail.com',
-            pass: "rczk fcfb eqpp emmy"
+            user:'cozastore4@gmail.com',
+            pass: process.env.pass
         }
     })
 
@@ -42,7 +42,7 @@ console.log(req.body,"emalllll");
     const mailOptions = {
         from: {
             name:"ex-fam",
-            address: 'aflozz010@gmail.com',
+            address: 'cozastore4@gmail.com',
         },
         to:req.body.email || email,
         subject: 'OTP Verification',
