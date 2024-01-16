@@ -89,7 +89,7 @@ const insertUser = async (req, res, next) => {
                 const savedUser = await User.findOne({ userName: username });
 console.log("user deatails",savedUser);
                 // Consider adding proper error handling/logging for the sendMail function
-                sendMail(req, res, savedUser._id,savedUser.email, false);
+                sendMail(req, res, savedUser._id,savedUser.email);
             } else {
                 return res.render('user/userRegister', { message: 'Password and confirm password do not match' });
             }
