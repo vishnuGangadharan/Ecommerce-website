@@ -22,7 +22,7 @@ const sendToMail = (req,res, userId,email) =>{
         secure:true,
         auth:{
             user:'cozastore4@gmail.com',
-            pass: process.env.pass
+            pass: process.env.PASS
         }
     })
 
