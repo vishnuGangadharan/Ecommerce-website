@@ -104,6 +104,7 @@ const dashboard =  async(req,res) =>{
 
 
 //most selling product
+
 const pipelineMostSoldProducts = [
     {
         $match: {
@@ -203,7 +204,7 @@ const pipelineMostSoldCategories = [
     },
   ];
   
-  console.log('Pipeline before aggregation:', pipelineMostSoldCategories);
+//   console.log('Pipeline before aggregation:', pipelineMostSoldCategories);
   
   const mostSoldCategories = await Order.aggregate(pipelineMostSoldCategories);
   

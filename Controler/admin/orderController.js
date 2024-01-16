@@ -112,7 +112,7 @@ const returnRequestAction = async (req, res, next) => {
         const foundRequet = await Return.findById(req.body.request);
         const foundOrders = await Order.findById(req.body.order);
         const currentProduct = foundOrders.products.find((product) => product.product.toString() === req.body.product.toString());
-        if(req.body.action === "approve"){
+        if(req.body.action === "Approve"){
             foundRequet.status = "Approved";
             currentProduct.returnRequested = 'Approved';
         }else if(req.body.action === "Rejected"){

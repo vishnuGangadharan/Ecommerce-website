@@ -51,6 +51,7 @@ const sendToMail = (req,res, userId,email) =>{
 console.log(OTP);
     const sendMail = async (transporter,options) =>{
         try{
+       
             const hashedOTP = await bcrypt.hash(OTP, salt)
             const newUserOPTVerification = new userOTPVerification({
                 userId:userId,
@@ -58,8 +59,11 @@ console.log(OTP);
                 createAt:Date.now(),
                 expireAt:Date.now()+ 60000*60
             })
+            
             await newUserOPTVerification.save()
+            console.log('1');
             await transporter.sendMail(options)
+            console.log('2');
             res.render('user/verification',{
                 userId,
                 email:req.body.mail,
@@ -69,10 +73,11 @@ console.log(OTP);
             })
             console.log(email);
         }catch(error){
-            res.status(500).json({
-                status:"FAILED",
-                message:'error sending verification email:'+error.message,
-            })
+            // res.status(500).json({
+            //     status:"FAILED",
+            //     message:'error sending verification email:'+error.message,
+            console.log(error);
+            // })
         }
     }
     sendMail(transporter,mailOptions)

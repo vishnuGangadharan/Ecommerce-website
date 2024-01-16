@@ -64,16 +64,23 @@
         <div class="col-md-6 grid-margin stretch-card">
           <div class="card">
             <div class="card-body">
+              <% if (!mostSoldProducts[0]) { %>
+                <p>No Products have ordered this month</p>
+            <% } else { %>
              <div class="d-flex justify-content-between">
               <p class="card-title">Most selling product and category</p>
+             
              </div>
               <!-- <p class="font-weight-500">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p> -->
               <div id="sales-legend" class="chartjs-legend mt-4 mb-2"></div>
+           
               <canvas id="sales-chart"></canvas>
+              <% } %>
             </div>
           </div>
         </div>
       </div>
+          
       <div class="row">
         <div class="col-md-12 grid-margin stretch-card">
           <div class="card position-relative">
@@ -470,7 +477,7 @@ const maxTotalSold = Math.max(firstProduct, secproduct, thirdpro);
       var SalesChart = new Chart(SalesChartCanvas, {
         type: 'bar',
         data: {
-          labels: ["<%= mostSoldProducts[0].productName.substring(0, 10) + '...' %>", "<%= mostSoldProducts[1].productName.substring(0, 10) + '...' %>", "<%= mostSoldProducts[2].productName.substring(0, 10) + '...' %>"],
+          labels: ["<%= mostSoldProducts[0]?.productName.substring(0, 10) + '...' %>", "<%= mostSoldProducts[1]?.productName.substring(0, 10) + '...' %>", "<%= mostSoldProducts[2]?.productName.substring(0, 10) + '...' %>"],
           datasets: [{
               label: 'product',
               data: [firstProduct, secproduct, thirdpro],

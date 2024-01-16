@@ -87,9 +87,9 @@ const insertUser = async (req, res, next) => {
 
                 await newUser.save();
                 const savedUser = await User.findOne({ userName: username });
-
+console.log("user deatails",savedUser);
                 // Consider adding proper error handling/logging for the sendMail function
-                sendMail(req, res, savedUser._id, false);
+                sendMail(req, res, savedUser._id,savedUser.email, false);
             } else {
                 return res.render('user/userRegister', { message: 'Password and confirm password do not match' });
             }
@@ -263,8 +263,6 @@ const forgetPassword = async(req,res) =>{
                     res.redirect(`/verifyOTPForgetPass?userId=${findUser._id}`)
                 }
 
-
-
                } 
             }
         }catch(error){
@@ -371,7 +369,6 @@ const resendOTP = async(req,res) =>{
         res.redirect('/userLogin')
        }
        
-
     }catch(error){
         console.log(error);
     }
