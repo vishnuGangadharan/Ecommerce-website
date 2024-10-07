@@ -101,6 +101,12 @@
         hasErrors = true;
         document.getElementById("username-error-display").innerHTML = "Please enter a username.";
       }
+      if(usernameInput.value.match(/^[A-Za-z\._\-0-9]*[@][A-Za-z]*[\.][a-z]{2,4}$/)){
+        hasErrors = true;
+        
+        document.getElementById("username-error-display").innerHTML = "cannot contain characters";
+
+      }
 
       if (!emailInput.value) {
         hasErrors = true;

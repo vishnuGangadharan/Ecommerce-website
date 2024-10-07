@@ -240,15 +240,12 @@ const productDetails = async(req,res) => {
         let cartnum;
         if(req.session.user){
           cartnum = await User.findById(req.session.user)
-          //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
               }
         const { id } = req.params;
         const details = await product.findById({ _id:id }).populate('category')
         if(details){
-            res.render('User/productDetails',{details,session,id,cartnum})
+            res.render('user/productDetails',{details,session,id,cartnum})
         }
-        console.log("gdfg",details.category);
-console.log("dsdsddddddddd");
 
     }catch(error){
         console.log(error.message);

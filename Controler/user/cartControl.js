@@ -72,7 +72,9 @@ const addCart = async (req, res) => {
     console.log(totalCartValue);
     user.grandTotal = totalCartValue;
     await user.save();
-    res.status(200).json("");
+    let length = user.cart.length
+    console.log('length',length);
+    res.status(200).json(length);
   } catch (error) {
     res.status(400).json("");
     console.log(error.message);
@@ -154,7 +156,9 @@ const loadCheckOut = async (req, res) => {
   let cartnum;
   if (req.session.user) {
     cartnum = await User.findById(req.session.user);
-    //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
+  }
+  if(cartnum.cart.length ==0){
+    res.redirect('/cart')
   }
   try {
     const user = await User.findById(session);
@@ -185,12 +189,6 @@ const loadCheckOut = async (req, res) => {
       let categoryOffer =
         (element.product.category && element.product.category.offer) || 0;
 
-      // Check if both product and category have offers
-      // if (productOffer > 0 && categoryOffer > 0) {
-      // Apply the larger of the two offers
-      //     maxOfferPercentage = Math.max(productOffer, categoryOffer);
-      // } else {
-      // Apply the available offer (it could be either product or category)
       maxOfferPercentage = Math.max(productOffer, categoryOffer);
       // }
 
@@ -323,7 +321,6 @@ const placeOrder = async (req, res) => {
     let cartnum;
     if (req.session.user) {
       cartnum = await User.findById(req.session.user);
-      //  console.log("jjjjjjjjjjjjj",currentuser.cart.length);
     }
     const currentUser = await User.findOne({ _id: req.session.user });
 
@@ -363,12 +360,10 @@ const placeOrder = async (req, res) => {
       paymentMethod: req.body.method,
       deliveryAddress,
     });
-    // console.log('nefffffffffffffffffffffffffffffffffffffffff',newOrder.totalAmount);
     if (req.body.method === "cod") {
       await newOrder.save();
       console.log("dddddddddd", newOrder.totalAmount);
     } else if (req.body.method == "wlt") {
-      // console.log(newOrder.totalAmount ,"fffffff", currentUser.wallet.balance);
       if (newOrder.totalAmount > currentUser.wallet.balance) {
         res.render("user/shop", {
           session: req.session.user,

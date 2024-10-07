@@ -67,7 +67,7 @@ const insertUser = async (req, res, next) => {
         }else{
             refferalCode=""
         }
-
+        
         if (email && username && phone && password && confirmPassword) {
             const foundUser = await User.findOne({ $or: [{ userName: username }, { email: email }] });
 

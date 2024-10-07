@@ -197,6 +197,7 @@ try{
 
 const editProfile= async(req,res) =>{
     try{
+        console.log(req.body);
         const session = req.session.user
         const {username,phone,email} =req.body;
         const user = await User.findByIdAndUpdate(session,{$set:{

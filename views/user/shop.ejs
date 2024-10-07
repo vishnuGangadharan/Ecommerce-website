@@ -505,28 +505,35 @@
         "Content-Type": "application/json",
       },
     })
-      .then((response) => {
+      .then(async(response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
-        } else if ((response.status = "400")) {
+        } 
+
+          let v = await response.json()
+          console.log(v);
+          return v
         
-        } else {
-          return response.json();
-        }
       })
       .then((data) => {
-        // console.log(req.session.user);
+       
         flashMessage.textContent = "Item added to cart!";
         flashMessage.style.display = "inline-block";
         alertBox.style.display = "block";
-		
+        
 
         setTimeout(() => {
           flashMessage.style.display = "none";
           alertBox.style.display = "none";
         }, 2000);
+      
+
+        console.log(data);
+        document.getElementById('cartItem').setAttribute("data-notify",data)
       })
+      
       .catch((error) => {
+        console.log(error);
 		flashMessage.textContent = "stock limit exceed";
           flashMessage.style.display = "inline-block";
           alertBox.style.display = "block";
